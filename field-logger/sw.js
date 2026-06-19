@@ -1,8 +1,8 @@
 /* Service worker - offline app shell. Cache-first so the logger works with no signal at the venue.
  * Assets are added individually (allSettled) so a missing startlist.json never breaks the install. */
-const CACHE = "eqfl-v2";
+const CACHE = "eqfl-v3";
 const ASSETS = ["./", "index.html", "app.js", "qrcode.js", "manifest.webmanifest",
-  "icon-192.png", "icon-512.png", "startlist.json", "startlist.sample.json"];
+  "icon-192.png", "icon-512.png", "startlist.json", "startlist.sample.json", "cheatsheet.html"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.allSettled(ASSETS.map((a) => c.add(a)))));

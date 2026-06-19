@@ -8,20 +8,31 @@ It is the tactile sibling of the verbal-slate field log ([../field_log.py](../fi
 emits the **same `field_log.json`** that `Auto-sort -FieldLog` already consumes — so it plugs straight into
 the existing sorter with no new consumer.
 
-## Three capture modes (all land in one export)
+## Capture modes (all land in one export)
 
 | Mode | What you do | What it gives the edit |
 |------|-------------|------------------------|
 | **Tap** rider / activity | tap the rider as they go, tap an activity (Round / Warm-up / B-roll …) | a timed **segment** → deterministic rider routing (`start_no` window) |
+| **Shot** chip | tap Wide / Tight / Detail / React / Follow | a **shot event** → coverage tracking + gap warnings ("no Tight of #5 yet") |
 | **★ Flag** | star a keeper moment | a marker for culling + Resolve markers |
 | **🎤 Note** | hold and say "that was the hero shot at fence 5" | a timestamped **voice note**, transcribed on the PC by our Whisper |
+| **GPS** (Sync panel) | tap *Tag venue GPS* once | the venue lat/lon → reverse-geocoded on the PC (fills Equipe's GPS gap) |
 
-Taps are the *machine spine* (who/what/when → routing); flags + voice are the *human nuance* (why/how-good →
-editing & story). Routing never depends on Whisper hearing a name right — the tap already nailed the rider.
+Taps are the *machine spine* (who/what/when → routing); shots/flags/voice are the *human nuance* (variety /
+why / how-good → editing & story). Routing never depends on Whisper hearing a name right — the tap already
+nailed the rider.
 
-## Clock sync (the one hard problem)
+**Coverage view:** tap the status line to see shots-by-type, subjects covered, missing types, and which logged
+riders still have no shot — so you chase gaps in the moment. (GPS needs a secure origin = the GitHub Pages
+URL, not the plain-http LAN serve.)
 
-The phone clock and the camera's EXIF clock differ; you measure the offset **once per camera per card**:
+## Clock sync (optional — only when a clock is off)
+
+**If the camera clocks are set correctly, skip this** — ingest's default treats phone-local time as camera
+time, which is exactly right when clocks agree. In practice the **1DX3 GPS-syncs its own clock** (and geotags
+stills, so `Auto-sort -Geocode` gets the venue straight from the photos — the phone GPS below is just a
+backup, mainly for the GPS-less FX6); just keep the **FX6** clock set. Only when a clock might be off do you
+measure the offset **once per camera per card**:
 
 - **Camera shoots the phone** — open **Sync**, point the camera at the screen, take one photo. The on-screen
   **QR** carries the phone time; that photo's EXIF carries the camera time → offset. (The sync frame lands on
@@ -45,12 +56,16 @@ field_logger.py ingest --session <file>    →  field_log.json   (camera-time se
 Run it from the workflow menu (**Tool 46**): **B**uild start list → **S**erve to phone → **I**ngest the
 session. Or directly: `python field_logger.py build|ingest|selftest` (see the file header).
 
-## Deployment
+## Deployment & delivery
 
-- **Now:** Tool 46 → *Serve* hosts the app on the LAN (`python -m http.server`). The phone opens it on the
-  same Wi-Fi and "Add to Home screen" installs it as an offline app (service worker caches the shell).
-- **Later (optional):** drop `field_logger/` on GitHub Pages (like the `phone-ref` page) for a fixed URL that
-  needs no PC running. The start list still comes from `field_logger.py build` (commit `startlist.json`).
+- **LAN serve (default):** Tool 46 → *Serve* runs `field_logger.py serve` = static files **+ a `POST /upload`
+  receiver**. The phone opens `http://<pc>:8137/` on the same Wi-Fi, "Add to Home screen" installs it offline,
+  and the phone's **Send** button posts the session straight into the project folder — no file copy. (When the
+  receiver is reachable the app shows *Send*; otherwise it falls back to *Export* = download.)
+- **GitHub Pages (fixed URL, no PC):** the app also lives at
+  **`erikvassmar-droid.github.io/phone-ref/field-logger/`** (deployed from `phone-ref/field-logger/`). https
+  there means **GPS + install work without a PC running**. The start list comes from `field_logger.py build`
+  (use the LAN serve for the live list, or commit `startlist.json` into the Pages folder per event).
 
 ## Schemas
 

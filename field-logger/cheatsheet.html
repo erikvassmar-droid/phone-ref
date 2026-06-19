@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field Logger — Field Cheat Sheet</title>
+<style>
+  :root{ --green:#379144; --green2:#4cc163; --bg:#000; --panel:#0b0f0d; --panel2:#111813;
+    --line:#1c241f; --txt:#eef2ef; --mut:#90a89a; --amber:#e0a23a; }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--txt);
+    font-family:-apple-system,Segoe UI,Roboto,system-ui,sans-serif; line-height:1.5;
+    padding:18px 16px 40px; max-width:760px; margin:0 auto; -webkit-text-size-adjust:100%}
+  header{border-bottom:2px solid var(--green); padding-bottom:10px; margin-bottom:16px}
+  h1{font-size:22px; margin:0; letter-spacing:.2px}
+  .sub{color:var(--mut); font-size:13px; margin-top:3px}
+  .rhythm{background:linear-gradient(180deg,#10331c,#0b1f12); border:1px solid var(--green);
+    border-radius:14px; padding:12px 14px; margin:0 0 18px; font-size:16px; font-weight:700; text-align:center}
+  .rhythm b{color:var(--green2)}
+  section{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px 14px 14px; margin-bottom:12px}
+  h2{font-size:15px; margin:0 0 8px; display:flex; align-items:center; gap:9px}
+  h2 .n{flex:none; width:24px; height:24px; border-radius:7px; background:var(--green); color:#04150a;
+    font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center}
+  ol,ul{margin:6px 0 0; padding-left:22px}
+  li{margin:5px 0}
+  .k{color:var(--green2); font-weight:700}
+  .muted{color:var(--mut)}
+  .legend{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:4px}
+  .legend div{background:var(--panel2); border:1px solid var(--line); border-radius:9px; padding:8px 10px; font-size:13px}
+  .legend b{color:var(--txt)}
+  .fallback{background:var(--panel2); border:1px solid #2a2418; border-left:3px solid var(--amber); border-radius:10px; padding:10px 13px}
+  .fallback h2 .n{background:var(--amber); color:#1c1505}
+  .ladder{font-size:13.5px; margin-top:4px}
+  .ladder b{color:var(--amber)}
+  code{background:#0e1611; border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:12.5px; color:var(--green2)}
+  footer{color:var(--mut); font-size:12px; margin-top:16px; text-align:center; line-height:1.7}
+  footer code{font-size:11.5px}
+  @media print{
+    body{background:#fff; color:#111; max-width:none}
+    .rhythm{background:#eaf6ee; color:#111} .rhythm b{color:#1c7a32}
+    section,.fallback,.legend div{background:#fff; border-color:#ccc}
+    h2 .n{background:#1c7a32} .k,.ladder b,.legend b,code{color:#1c7a32}
+    .muted{color:#555} header{border-color:#1c7a32}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Field Logger — Field Cheat Sheet</h1>
+    <div class="sub">Tool 46 · camera-mounted phone · tap riders → <code>field_log.json</code> → Auto-sort</div>
+  </header>
+
+  <div class="rhythm">THE RHYTHM: <b>tap the rider → shoot → tap next ▼</b></div>
+
+  <section>
+    <h2><span class="n">1</span> Before the class <span class="muted">(once)</span></h2>
+    <ul>
+      <li><span class="k">Build the list:</span> Tool 46 → <b>B</b> → paste the Equipe class id / startlists URL.</li>
+      <li><span class="k">Open on phone:</span> with PC → Tool 46 → <b>S</b>, open the <code>http://&lt;pc-ip&gt;:8137/</code> it prints (same Wi-Fi). No PC → open the Pages URL (below). Then <b>Add to Home screen</b>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span> Mount <span class="muted">(sync only if a clock is off)</span></h2>
+    <ul>
+      <li>Mount the phone on the camera.</li>
+      <li><span class="k">Clocks set right? Skip Sync.</span> The 1DX3 GPS-syncs its clock <i>and</i> geotags photos; just keep the FX6 clock set. Ingest then uses phone time = camera time.</li>
+      <li><span class="muted">Only if a clock might be off:</span> tap <b>Sync</b> → photograph the QR, or type the camera's clock (pick FX6 / 1DX3).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span> While shooting</h2>
+    <ul>
+      <li><span class="k">Set the activity once</span> (e.g. <b>Round</b>) — it carries to each rider.</li>
+      <li><span class="k">Tap the rider</span> as they enter (or <b>▼ Next</b>) — starts their time window.</li>
+      <li><span class="k">Tap a shot chip</span> when you grab one: Wide · Tight · Detail · React · Follow.</li>
+      <li><b>★ Flag</b> a keeper · <b>🎤 Note</b> to say what a special clip was.</li>
+      <li><span class="muted">Tap the status line → Coverage: chase gaps ("no Tight of #5 yet").</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span> End of the card</h2>
+    <ul>
+      <li><span class="k">To the PC:</span> tap <b>Send</b> (LAN serve → lands in the project) or <b>Export</b> (downloads).</li>
+      <li><span class="k">Ingest:</span> Tool 46 → <b>I</b> → pick the camera → writes <code>field_log.json</code>.</li>
+      <li><span class="k">Sort:</span> run <b>Auto-sort (Tool 22)</b> — it picks up the field log and routes everything.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">★</span> Button legend</h2>
+    <div class="legend">
+      <div><b>Activities</b> — Round / Warm-up / Walk / B-roll / Portrait / Interview / Ceremony / Scenery / Stable</div>
+      <div><b>Shot chips</b> — Wide / Tight / Detail / React / Follow (coverage)</div>
+      <div><b>★ Flag</b> — mark the current moment a keeper</div>
+      <div><b>🎤 Note</b> — record a timestamped voice note</div>
+      <div><b>Sync</b> — clock sync + Tag venue GPS</div>
+      <div><b>Send / Export</b> — push to PC / download the session</div>
+    </div>
+  </section>
+
+  <div class="fallback">
+    <h2><span class="n">!</span> If you skip the logger</h2>
+    <div class="ladder">
+      Everything still sorts — the logger is just the most certain layer. Auto-sort falls back per file:<br>
+      <b>Photos:</b> field-log → bib OCR (<code>-UseBib</code>) → <b>timestamp</b> window → <code>_Loose</code>.<br>
+      <b>Clips:</b> field-log → scene/slate → name in filename → voice (Whisper) → timestamp; b-roll → <code>_&lt;Type&gt;</code> folder.<br>
+      <span class="muted">Caveat: timestamp sorting needs the camera clock ≈ real time — the 1DX3 GPS-syncs this automatically; just keep the FX6 clock set (or Sync once if unsure).</span>
+    </div>
+  </div>
+
+  <footer>
+    LAN: <code>http://&lt;pc-ip&gt;:8137/</code> &nbsp;·&nbsp; Pages: <code>erikvassmar-droid.github.io/phone-ref/field-logger/</code><br>
+    Equisport Field Logger · works offline once loaded
+  </footer>
+</body>
+</html>
