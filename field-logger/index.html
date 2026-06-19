@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Equisport Field Logger</title>
+<style>
+  :root{
+    --green:#379144; --green-dim:#1f5a29; --bg:#000; --panel:#0b0f0d; --panel2:#111813;
+    --line:#1c241f; --txt:#f3f6f4; --mut:#8aa093; --amber:#e0a23a; --red:#d8473f;
+    --r:14px; --tap:60px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation}
+  html,body{margin:0; height:100%}
+  body{
+    background:var(--bg); color:var(--txt); font-family:-apple-system,Segoe UI,Roboto,system-ui,sans-serif;
+    display:flex; flex-direction:column; height:100dvh; overflow:hidden;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  header{display:flex; align-items:center; gap:10px; padding:8px 12px; border-bottom:1px solid var(--line)}
+  header .cls{flex:1; min-width:0}
+  header .cls .name{font-weight:700; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  header .cls .sub{font-size:11px; color:var(--mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  #clock{font-variant-numeric:tabular-nums; font-weight:700; font-size:18px; letter-spacing:.5px}
+  .pill{font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid var(--line); color:var(--mut); white-space:nowrap}
+  .pill.warn{color:var(--amber); border-color:#5a4520}
+  .pill.ok{color:var(--green); border-color:var(--green-dim)}
+
+  main{flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; padding:10px 12px; overflow:hidden}
+
+  /* current rider card */
+  #current{
+    background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid var(--line);
+    border-radius:var(--r); padding:12px 14px; display:flex; align-items:center; gap:12px; min-height:92px;
+  }
+  #current .no{
+    flex:none; min-width:54px; height:54px; padding:0 8px; border-radius:12px; background:var(--green);
+    color:#031206; font-weight:800; font-size:26px; display:flex; align-items:center; justify-content:center;
+  }
+  #current .who{flex:1; min-width:0}
+  #current .rider{font-weight:800; font-size:24px; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  #current .horse{font-size:15px; color:var(--mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  #current .nav{display:flex; flex-direction:column; gap:6px}
+  #current .nav button{width:46px; height:40px; font-size:20px; background:var(--panel2); color:var(--txt); border:1px solid var(--line); border-radius:10px}
+
+  /* activity chips */
+  #activities{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+  .act{height:var(--tap); border-radius:12px; border:1px solid var(--line); background:var(--panel);
+    color:var(--txt); font-size:15px; font-weight:600; display:flex; align-items:center; justify-content:center}
+  .act .em{margin-right:6px; font-size:17px}
+  .act.on{background:var(--green); color:#04150a; border-color:var(--green)}
+
+  /* big actions */
+  #actions{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .big{height:64px; border-radius:14px; border:1px solid var(--line); background:var(--panel2); color:var(--txt);
+    font-size:17px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px}
+  #flagBtn.on{background:#3a2f0c; border-color:#5a4520; color:var(--amber)}
+  #noteBtn.rec{background:#3a1410; border-color:#5a221c; color:var(--red); animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.55}}
+
+  /* rider list */
+  #listWrap{flex:1; min-height:0; border:1px solid var(--line); border-radius:var(--r); overflow:auto; background:var(--panel)}
+  .row{display:flex; align-items:center; gap:10px; padding:11px 12px; border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:0}
+  .row.cur{background:#0f1f14}
+  .row .rno{flex:none; min-width:30px; text-align:right; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums}
+  .row .rn{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .row .rh{font-size:12px; color:var(--mut)}
+  .row .mk{flex:none; font-size:12px; color:var(--mut)}
+  .row.logged .mk{color:var(--green)}
+
+  footer{display:flex; gap:8px; align-items:center; padding:8px 12px; border-top:1px solid var(--line)}
+  footer .status{flex:1; min-width:0; font-size:12px; color:var(--mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  footer button{height:44px; padding:0 14px; border-radius:10px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); font-weight:700; font-size:14px}
+  footer button.exp{background:var(--green); color:#04150a; border-color:var(--green)}
+
+  /* sync overlay */
+  #sync{position:fixed; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
+    padding-top:calc(env(safe-area-inset-top) + 16px)}
+  #sync.show{display:flex}
+  #sync h2{margin:0 0 4px; font-size:16px}
+  #sync .hint{font-size:12px; color:var(--mut); margin-bottom:10px}
+  #sync .bigclock{font-variant-numeric:tabular-nums; font-weight:800; font-size:54px; text-align:center; letter-spacing:1px}
+  #qr{display:flex; justify-content:center; margin:12px 0}
+  #qr img,#qr canvas,#qr table{width:64vw; max-width:320px; height:auto; image-rendering:pixelated; background:#fff; padding:10px; border-radius:10px}
+  #sync .manual{margin-top:auto; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px}
+  #sync .manual label{font-size:12px; color:var(--mut)}
+  #sync .manual .field{display:flex; gap:8px; margin-top:6px}
+  #sync input,#sync select{height:46px; background:var(--panel2); color:var(--txt); border:1px solid var(--line); border-radius:10px; padding:0 10px; font-size:15px}
+  #sync input{flex:1; font-variant-numeric:tabular-nums}
+  #sync .btns{display:flex; gap:8px; margin-top:10px}
+  #sync .btns button{flex:1; height:50px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); font-weight:700; font-size:15px}
+  #sync .btns .save{background:var(--green); color:#04150a; border-color:var(--green)}
+  #syncLog{font-size:11px; color:var(--mut); margin-top:8px; white-space:pre-line}
+  #sync .geo{display:flex; gap:8px; margin-top:10px; align-items:center}
+  #sync .geo button{height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); font-weight:700; font-size:14px}
+  #geoLog{font-size:11px; color:var(--mut); flex:1; min-width:0}
+
+  /* shot-type row (slim, text, outlined - lighter than the activity chips) */
+  #shots{display:grid; grid-template-columns:repeat(5,1fr); gap:6px}
+  .shot{height:42px; border-radius:10px; border:1px solid var(--line); background:transparent; color:var(--mut); font-size:13px; font-weight:600}
+  .shot.hit{background:var(--green); color:#04150a; border-color:var(--green)}
+  footer button.snd{background:var(--panel2); color:var(--green); border-color:var(--green-dim)}
+
+  /* coverage overlay */
+  #cover{position:fixed; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
+    padding-top:calc(env(safe-area-inset-top) + 16px)}
+  #cover.show{display:flex}
+  #cover h2{margin:0 0 10px; font-size:16px}
+  .covgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px}
+  .cov{border:1px solid var(--line); border-radius:10px; padding:10px 4px; text-align:center; background:var(--panel)}
+  .cov .n{font-size:24px; font-weight:800}
+  .cov .l{font-size:11px; color:var(--mut)}
+  .cov.has{border-color:var(--green-dim)} .cov.has .n{color:var(--green)}
+  .cov.miss .n{color:#3a4640}
+  .covline{margin-top:12px; font-size:13px; color:var(--mut)}
+  .covwarn{margin-top:10px; color:var(--amber); font-weight:600}
+  .covok{margin-top:10px; color:var(--green)}
+  .covlist{margin-top:12px; font-size:13px; line-height:1.7; color:var(--txt); overflow:auto}
+  #cover .btns{margin-top:auto; display:flex}
+  #cover .btns button{flex:1; height:50px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); font-weight:700; font-size:15px}
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+  <header>
+    <div class="cls"><div class="name" id="clsName">Field Logger</div><div class="sub" id="clsSub">no class loaded</div></div>
+    <div id="syncPill" class="pill warn">no sync</div>
+    <div id="clock">--:--:--</div>
+  </header>
+
+  <main>
+    <section id="current">
+      <div class="no" id="curNo">–</div>
+      <div class="who"><div class="rider" id="curRider">Load a start list</div><div class="horse" id="curHorse"></div></div>
+      <div class="nav"><button id="prevBtn" aria-label="previous">▲</button><button id="nextBtn" aria-label="next">▼</button></div>
+    </section>
+
+    <section id="activities"><!-- activity chips injected --></section>
+
+    <section id="shots"><!-- shot-type chips injected --></section>
+
+    <section id="actions">
+      <button class="big" id="flagBtn">★ <span>Flag</span></button>
+      <button class="big" id="noteBtn">🎤 <span>Note</span></button>
+    </section>
+
+    <div id="listWrap"><div id="list"><!-- rider rows injected --></div></div>
+  </main>
+
+  <footer>
+    <div class="status" id="status">—</div>
+    <button id="syncBtn">Sync</button>
+    <button id="sendBtn" class="snd hidden">Send</button>
+    <button id="exportBtn" class="exp">Export</button>
+  </footer>
+
+  <!-- clock-sync overlay -->
+  <div id="sync">
+    <h2>Clock sync</h2>
+    <div class="hint">Point the <b>camera</b> at this screen and take one photo (the QR carries the phone time). <i>Or</i> read the camera's own clock and type it below.</div>
+    <div class="bigclock" id="syncClock">--:--:--</div>
+    <div id="qr"></div>
+    <div class="manual">
+      <label>Camera's clock shows (HH:MM:SS today), pick which camera:</label>
+      <div class="field">
+        <input id="camTime" type="text" inputmode="numeric" placeholder="13:24:07">
+        <select id="camName"><option>FX6</option><option>1DX3</option><option>Other</option></select>
+      </div>
+      <div class="btns">
+        <button id="syncClose">Close</button>
+        <button id="syncSave" class="save">Save sync</button>
+      </div>
+      <div id="syncLog"></div>
+      <div class="geo"><button id="geoBtn">Tag venue GPS</button><div id="geoLog">optional · needs https (Pages)</div></div>
+    </div>
+  </div>
+
+  <!-- coverage overlay (tap the status line to open) -->
+  <div id="cover">
+    <h2>Coverage</h2>
+    <div id="coverBody"></div>
+    <div class="btns"><button id="coverClose">Close</button></div>
+  </div>
+
+<script src="qrcode.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

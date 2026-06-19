@@ -1,0 +1,20 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1251175",
+  "competition": "Demo Horse Show",
+  "class_name": "1.40 m Grand Prix (sample)",
+  "sec_per_start": 95,
+  "generated": "sample - replace by running: python field_logger.py build --section 1251175",
+  "riders": [
+    { "start_no": 1, "rider": "Tilde Weinerhall", "horse": "Zelenskyj HZ" },
+    { "start_no": 2, "rider": "Fanny Grunditz", "horse": "Storminna" },
+    { "start_no": 3, "rider": "Zara Bratt", "horse": "Celino HS" },
+    { "start_no": 4, "rider": "Sissela Smith", "horse": "Papillon" },
+    { "start_no": 5, "rider": "Ramona Svensson", "horse": "Hot Chateau de la Vie" },
+    { "start_no": 6, "rider": "Klara Winkler", "horse": "Quartz Liberty" },
+    { "start_no": 7, "rider": "Matilda Belin Thunholm", "horse": "Quatermaster Bay" },
+    { "start_no": 8, "rider": "Sandra Jacobsson", "horse": "Bollerup Cuba" },
+    { "start_no": 9, "rider": "Melker Karlsson", "horse": "Money-Mou Less" },
+    { "start_no": 10, "rider": "Maja Setterberg", "horse": "DGs Power Boy" }
+  ]
+}
