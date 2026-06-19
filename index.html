@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>PC Tuning — Phone Ref</title>
+<style>
+  :root{
+    --bg:#000; --card:#0c0c0c; --line:#1c1c1c; --txt:#e8e8e8; --muted:#8a8f96;
+    --green:#34a853; --red:#ea4335; --amber:#fbbc04; --blue:#8ab4f8;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;
+    line-height:1.5;padding:14px 14px 40px;max-width:680px;margin:0 auto;
+    font-size:16px;-webkit-text-size-adjust:100%}
+  h1{font-size:20px;margin:4px 0 2px;color:var(--blue);font-weight:700}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:12px 14px;margin:10px 0}
+  h2{font-size:14px;margin:0 0 8px;color:var(--green);font-weight:600;
+    letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.k{color:var(--muted);white-space:nowrap;padding-right:12px;width:38%}
+  td.v{color:var(--txt);font-weight:500}
+  b{color:#fff}
+  .g{color:var(--green);font-weight:700}
+  .r{color:var(--red);font-weight:700}
+  .a{color:var(--amber);font-weight:700}
+  .note{color:var(--muted);font-size:12.5px;font-style:italic;margin:8px 2px 0}
+  code{background:#161616;border:1px solid #262626;border-radius:5px;
+    padding:1px 6px;font-family:ui-monospace,Consolas,monospace;font-size:13.5px;color:#fff}
+  .chk{font-size:14.5px;margin:5px 0}
+  .stamp{color:#555;font-size:11px;text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+  <h1>📱 PC Tuning — Quick Ref</h1>
+  <div class="sub">9950X3D · ProArt X870E · RTX 5070 Ti — updated 2026-06-19</div>
+
+  <div class="card">
+    <h2>🟢 CPU — Curve Optimizer</h2>
+    <table>
+      <tr><td class="k">DAILY ✅</td><td class="v"><span class="g">CCD0 −14 / CCD1 −30</span></td></tr>
+      <tr><td class="k">Validated</td><td class="v">quick + R23 <b>44,300</b> + 30-min all-core soak (0 err/WHEA)</td></tr>
+      <tr><td class="k">Fallback 1</td><td class="v">CCD0 −12 / CCD1 −25</td></tr>
+      <tr><td class="k">Fallback 2</td><td class="v">CCD0 −10 / CCD1 −20 (rock-solid)</td></tr>
+      <tr><td class="k">Limits</td><td class="v">85°C cap (hits 84) · +100 boost · VSOC ~1.13V</td></tr>
+    </table>
+    <div class="note">R23 scaled 43.3k → 43.8k → 44.3k. Deeper is thermal-capped now — 2nd D15 fan is the lever, not more CO.</div>
+  </div>
+
+  <div class="card">
+    <h2>🟢 RAM</h2>
+    <table>
+      <tr><td class="k">Running</td><td class="v">1×32GB DDR5-<b>5600 C40</b> (40-40-40-77) 1T 1:1 — stable</td></tr>
+      <tr><td class="k">6000 C40</td><td class="v"><span class="r">NO-GO</span> on the single stick → reverted to 5600</td></tr>
+      <tr><td class="k">Bottleneck</td><td class="v">single stick = single channel</td></tr>
+      <tr><td class="k">Plan</td><td class="v"><span class="a">WAIT</span> for 2×32 kit (DDR5 prices high, easing ~2027)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🟢 GPU — Afterburner</h2>
+    <table>
+      <tr><td class="k">Daily OC</td><td class="v"><b>PROFILE #2</b> (~2992/3060 core, mem bumped)</td></tr>
+      <tr><td class="k">Proven</td><td class="v">GPU-busy −9% · 1% low 101→110</td></tr>
+      <tr><td class="k">VRAM</td><td class="v">push by 3DMark <b>Steel Nomad SCORE</b> only (ECC; +1000 = no gain)</td></tr>
+      <tr><td class="k">Don't</td><td class="v"><span class="r">enable ASUS AI OC</span></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🟢 Test Commands</h2>
+    <table>
+      <tr><td class="k"><code>runquick</code></td><td class="v">CPU sensitive cores ~6 min</td></tr>
+      <tr><td class="k"><code>runfull</code></td><td class="v">CPU all 16 cores ~30 min</td></tr>
+      <tr><td class="k"><code>ramquick</code> "tag"</td><td class="v">RAM limit-finder ~5 min</td></tr>
+      <tr><td class="k"><code>ramfull</code> "tag"</td><td class="v">RAM soak ~1 hour</td></tr>
+      <tr><td class="k"><code>rambench</code> "tag"</td><td class="v">MLC latency / bandwidth</td></tr>
+    </table>
+    <div class="note">All self-elevate, auto-close, results read automatically.</div>
+  </div>
+
+  <div class="card">
+    <h2 style="color:var(--amber)">🟡 Status / Next</h2>
+    <div class="chk">☑ CO −14/−30 validated — daily-drive a few days, watch idle WHEA</div>
+    <div class="chk">☐ RAM: wait for 2×32 kit → then 6000 C30 dual-channel</div>
+    <div class="chk">☐ Optional: 2nd D15 G2 fan → scale past the thermal cap</div>
+  </div>
+
+  <div class="stamp">live page · I refresh this anytime, same URL</div>
+</body>
+</html>
