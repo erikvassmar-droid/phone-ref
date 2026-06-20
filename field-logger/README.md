@@ -26,6 +26,23 @@ nailed the rider.
 riders still have no shot — so you chase gaps in the moment. (GPS needs a secure origin = the GitHub Pages
 URL, not the plain-http LAN serve.)
 
+## On-screen helpers (added 2026-06-20)
+
+| Helper | What it does |
+|--------|--------------|
+| **NEXT line** (under the card) | who's up next + an ETA from the class start time + `sec_per_start`, self-correcting off your taps |
+| **★ priority** (list + card edge) | must-cover riders (Swedish + top-3) from `build --priority`; the coverage view flags any with no shot yet |
+| **Story angle** (under the horse) | a one-line prep hook from `build --storyprep` (tdb_history) — handy when you tap a rider for an interview |
+| **Flag reason** | after ★, an optional one-tap *why* (hero / emotion / fall / win / sponsor / funny) — story-prep + culling |
+| **FX6 / 1DX3 pill** | tag the active camera; ingest applies each camera's own clock offset to a mixed session |
+| **B-roll checklist** (in Coverage) | tick the standing cutaways (coursewalk / crowd / sponsor / stable / venue / weather / details / atmosphere) |
+| **⤢ big mode + haptics** | a giant current-rider card and a buzz on every log, so you log without leaving the viewfinder |
+| **📋 Card summary** | end-of-card debrief: counts, coverage + priority gaps, sync/GPS status, then Send / Export |
+
+`build` flags `--priority <comma start_nos \| JSON squad/names>` and `--storyprep <tdb storyprep .md \| JSON>`
+are also exposed on Tool 46 build (`-Priority` / `-StoryPrep`). All of these are optional and back-compatible —
+a session that uses none of them ingests exactly as before.
+
 ## Clock sync (optional — only when a clock is off)
 
 **If the camera clocks are set correctly, skip this** — ingest's default treats phone-local time as camera

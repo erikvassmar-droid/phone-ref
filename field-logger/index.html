@@ -30,6 +30,9 @@
   .pill{font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid var(--line); color:var(--mut); white-space:nowrap}
   .pill.warn{color:var(--amber); border-color:#5a4520}
   .pill.ok{color:var(--green); border-color:var(--green-dim)}
+  .pill.cam{background:transparent; color:#5ad1e0; border-color:#2a5a62; font-weight:700; cursor:pointer; font-variant-numeric:tabular-nums}
+  .hbtn{flex:none; width:36px; height:32px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); color:var(--mut); font-size:17px; line-height:1; padding:0}
+  .hbtn.on{background:var(--green); color:#04150a; border-color:var(--green)}
 
   main{flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; padding:10px 12px; overflow:hidden}
 
@@ -45,8 +48,28 @@
   #current .who{flex:1; min-width:0}
   #current .rider{font-weight:800; font-size:24px; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   #current .horse{font-size:15px; color:var(--mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  #current .angle{font-size:12px; color:#9fc0ab; margin-top:3px; line-height:1.32;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+  #current .angle:empty{display:none}
   #current .nav{display:flex; flex-direction:column; gap:6px}
   #current .nav button{width:46px; height:40px; font-size:20px; background:var(--panel2); color:var(--txt); border:1px solid var(--line); border-radius:10px}
+
+  /* big mode: giant current rider + nav (thumb-only, eyes-free during a class). The list stays so the
+     flex column keeps a stable height; the enlarged card just dominates the screen. */
+  body.big #current{min-height:152px}
+  body.big #current .no{min-width:80px; height:80px; font-size:38px}
+  body.big #current .rider{font-size:31px}
+  body.big #current .horse{font-size:18px}
+  body.big #current .nav{flex-direction:row; gap:10px}
+  body.big #current .nav button{width:66px; height:66px; font-size:28px}
+  body.big .upnext{font-size:15px}
+  #current.pri{border-left:4px solid var(--green)}
+
+  /* predictive up-next line (A1) */
+  .upnext{font-size:13px; color:var(--mut); padding:1px 2px 0; min-height:17px; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums; margin-top:-2px}
+  .upnext::before{content:"NEXT "; color:var(--green); font-weight:800; font-size:11px; letter-spacing:.6px}
+  .upnext.empty{display:none}
 
   /* activity chips */
   #activities{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
@@ -73,6 +96,7 @@
   .row .rh{font-size:12px; color:var(--mut)}
   .row .mk{flex:none; font-size:12px; color:var(--mut)}
   .row.logged .mk{color:var(--green)}
+  .pristar{color:var(--green); font-weight:700; margin-right:4px}
 
   footer{display:flex; gap:8px; align-items:center; padding:8px 12px; border-top:1px solid var(--line)}
   footer .status{flex:1; min-width:0; font-size:12px; color:var(--mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
@@ -109,7 +133,7 @@
 
   /* coverage overlay */
   #cover{position:fixed; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
-    padding-top:calc(env(safe-area-inset-top) + 16px)}
+    padding-top:calc(env(safe-area-inset-top) + 16px); overflow-y:auto}
   #cover.show{display:flex}
   #cover h2{margin:0 0 10px; font-size:16px}
   .covgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px}
@@ -121,15 +145,58 @@
   .covline{margin-top:12px; font-size:13px; color:var(--mut)}
   .covwarn{margin-top:10px; color:var(--amber); font-weight:600}
   .covok{margin-top:10px; color:var(--green)}
+  .covpri{margin-top:12px; font-size:13px; line-height:1.7; color:var(--txt); background:#241d0c; border:1px solid #5a4520; border-radius:10px; padding:9px 12px}
+  .covpri b{color:var(--amber)}
   .covlist{margin-top:12px; font-size:13px; line-height:1.7; color:var(--txt); overflow:auto}
-  #cover .btns{margin-top:auto; display:flex}
+  #cover .btns{margin-top:16px; display:flex}
   #cover .btns button{flex:1; height:50px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); font-weight:700; font-size:15px}
+  /* b-roll shopping list (B6) - tappable checklist inside the coverage view */
+  #brollSection{margin-top:18px}
+  .brollhdr{font-size:13px; color:var(--mut); font-weight:600; margin-bottom:8px}
+  #brollCount{color:var(--green); font-weight:700}
+  #brollGrid{display:grid; grid-template-columns:repeat(2,1fr); gap:7px}
+  .broll{height:46px; border-radius:10px; border:1px solid var(--line); background:var(--panel); color:var(--txt);
+    font-size:13px; font-weight:600; padding:0 6px; text-align:center}
+  .broll.covered{background:#0f2417; border-color:var(--green-dim); color:var(--green)}
+  .broll.covered::before{content:"✓ "; color:var(--green)}
   .hidden{display:none !important}
+
+  /* flag-reason chips (C7) - transient bar above the footer */
+  #reasonBar{position:fixed; left:0; right:0; bottom:64px; z-index:15; display:flex; gap:7px; padding:10px 12px;
+    justify-content:center; flex-wrap:wrap; background:linear-gradient(180deg,rgba(0,0,0,0),#000 35%);
+    transform:translateY(135%); transition:transform .18s ease; pointer-events:none}
+  #reasonBar.show{transform:translateY(0); pointer-events:auto}
+  #reasonBar .rsn{height:46px; padding:0 15px; border-radius:999px; border:1px solid #5a4520; background:#1c1505;
+    color:var(--amber); font-size:14px; font-weight:700}
+  #flagBtn.on #flagLbl{color:var(--amber)}
+
+  /* end-of-card debrief (C8) */
+  #wrap{position:fixed; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
+    padding-top:calc(env(safe-area-inset-top) + 16px)}
+  #wrap.show{display:flex}
+  #wrap h2{margin:0 0 10px; font-size:16px}
+  #wrapBody{overflow:auto; flex:1; min-height:0}
+  .wrapdone{background:linear-gradient(180deg,#10331c,#0b1f12); border:1px solid var(--green); border-radius:12px;
+    padding:11px 13px; font-weight:700; margin-bottom:12px; font-size:15px}
+  .wrapstat{display:flex; justify-content:space-between; gap:10px; padding:8px 2px; border-bottom:1px solid var(--line); font-size:14px}
+  .wrapstat span:first-child{color:var(--mut)}
+  .wrapstat .v{color:var(--green); font-weight:700; font-variant-numeric:tabular-nums; text-align:right}
+  .wrapstat .v.warn{color:var(--amber)}
+  .wrapcta{display:flex; gap:8px; margin-top:14px}
+  .wrapcta button{flex:1; height:52px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); font-weight:700; font-size:15px}
+  .wrapcta button.exp{background:var(--green); color:#04150a; border-color:var(--green)}
+  .wrapcta button.snd{background:var(--panel2); color:var(--green); border-color:var(--green-dim)}
+  #wrapMsg{font-size:12px; color:var(--mut); margin-top:8px; min-height:16px}
+  #wrap .btns{margin-top:10px; display:flex}
+  #wrap .btns button{flex:1; height:48px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); font-weight:700; font-size:15px}
 </style>
 </head>
 <body>
   <header>
     <div class="cls"><div class="name" id="clsName">Field Logger</div><div class="sub" id="clsSub">no class loaded</div></div>
+    <button id="wrapBtn" class="hbtn" aria-label="card summary" title="End-of-card summary">📋</button>
+    <button id="bigBtn" class="hbtn" aria-label="big mode" title="Big mode (eyes-free)">⤢</button>
+    <button id="camPill" class="pill cam" title="Active camera (tap to switch)">FX6</button>
     <div id="syncPill" class="pill warn">no sync</div>
     <div id="clock">--:--:--</div>
   </header>
@@ -137,16 +204,18 @@
   <main>
     <section id="current">
       <div class="no" id="curNo">–</div>
-      <div class="who"><div class="rider" id="curRider">Load a start list</div><div class="horse" id="curHorse"></div></div>
+      <div class="who"><div class="rider" id="curRider">Load a start list</div><div class="horse" id="curHorse"></div><div class="angle" id="curAngle"></div></div>
       <div class="nav"><button id="prevBtn" aria-label="previous">▲</button><button id="nextBtn" aria-label="next">▼</button></div>
     </section>
+
+    <div id="upnext" class="upnext empty"></div>
 
     <section id="activities"><!-- activity chips injected --></section>
 
     <section id="shots"><!-- shot-type chips injected --></section>
 
     <section id="actions">
-      <button class="big" id="flagBtn">★ <span>Flag</span></button>
+      <button class="big" id="flagBtn">★ <span id="flagLbl">Flag</span></button>
       <button class="big" id="noteBtn">🎤 <span>Note</span></button>
     </section>
 
@@ -178,6 +247,7 @@
       </div>
       <div id="syncLog"></div>
       <div class="geo"><button id="geoBtn">Tag venue GPS</button><div id="geoLog">optional · needs https (Pages)</div></div>
+      <div class="geo"><button id="hapticBtn">Haptics: on</button><div id="hapticHint" style="font-size:11px;color:var(--mut);flex:1;min-width:0">felt feedback on every log (Android)</div></div>
     </div>
   </div>
 
@@ -185,7 +255,26 @@
   <div id="cover">
     <h2>Coverage</h2>
     <div id="coverBody"></div>
+    <div id="brollSection">
+      <div class="brollhdr">B-roll checklist <span id="brollCount"></span></div>
+      <div id="brollGrid"><!-- b-roll target chips injected --></div>
+    </div>
     <div class="btns"><button id="coverClose">Close</button></div>
+  </div>
+
+  <!-- flag-reason chips (C7): pop up after you flag, optional one-tap why, auto-dismiss -->
+  <div id="reasonBar"><!-- reason chips injected --></div>
+
+  <!-- end-of-card debrief (C8): counts + gaps + a closure line + Send/Export -->
+  <div id="wrap">
+    <h2>Card summary</h2>
+    <div id="wrapBody"></div>
+    <div class="wrapcta">
+      <button id="wrapSend" class="snd hidden">Send to PC</button>
+      <button id="wrapExport" class="exp">Export</button>
+    </div>
+    <div id="wrapMsg"></div>
+    <div class="btns"><button id="wrapClose">Close</button></div>
   </div>
 
 <script src="qrcode.js"></script>
