@@ -33,7 +33,8 @@ URL, not the plain-http LAN serve.)
 | **NEXT line** (under the card) | who's up next + an ETA from the class start time + `sec_per_start`, self-correcting off your taps |
 | **★ priority** (list + card edge) | must-cover riders (Swedish + top-3) from `build --priority`; the coverage view flags any with no shot yet |
 | **Story angle** (under the horse) | a one-line prep hook from `build --storyprep` (tdb_history) — handy when you tap a rider for an interview |
-| **Flag reason** | after ★, an optional one-tap *why* (hero / emotion / fall / win / sponsor / funny) — story-prep + culling |
+| **Flag reason** | after ★, an optional one-tap *why* (hero / emotion / fall / **🥇 Win** / sponsor / funny) — story-prep + culling |
+| **🥇 Gold winners** | a **🥇 Win** flag marks that rider as a gold winner (gold badge in the list + gold ring on the card) so you chase their ceremony + reactions; **long-press** any rider to mark/unmark manually. The card debrief lists the winners and flags any with no shot yet |
 | **FX6 / 1DX3 pill** | tag the active camera; ingest applies each camera's own clock offset to a mixed session |
 | **B-roll checklist** (in Coverage) | tick the standing cutaways (coursewalk / crowd / sponsor / stable / venue / weather / details / atmosphere) |
 | **⤢ big mode + haptics** | a giant current-rider card and a buzz on every log, so you log without leaving the viewfinder |

@@ -66,6 +66,8 @@
   body.big #current .nav button{width:66px; height:66px; font-size:28px}
   body.big .upnext{font-size:15px}
   #current.pri{border-left:4px solid var(--green)}
+  #current.win{border-left:4px solid #f3c01b; box-shadow:inset 0 0 0 1px rgba(243,192,27,.35)}
+  #current.win .no{box-shadow:0 0 0 2px #f3c01b}
 
   /* predictive up-next line (A1) */
   .upnext{font-size:13px; color:var(--mut); padding:1px 2px 0; min-height:17px; white-space:nowrap;
@@ -99,6 +101,8 @@
   .row .mk{flex:none; font-size:12px; color:var(--mut)}
   .row.logged .mk{color:var(--green)}
   .pristar{color:var(--green); font-weight:700; margin-right:4px}
+  .goldmark{margin-right:4px}
+  .row.win{background:linear-gradient(90deg, rgba(243,192,27,.10), transparent 60%)}
 
   footer{display:flex; gap:8px; align-items:center; padding:8px 12px; border-top:1px solid var(--line)}
   footer .status{flex:1; min-width:0; font-size:12px; color:var(--mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}

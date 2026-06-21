@@ -29,7 +29,7 @@
   const SHOTS = [["Wide", "wide"], ["Tight", "tight"], ["Detail", "detail"], ["React", "reaction"], ["Follow", "follow"]];
   const SHOT_KEYS = SHOTS.map((s) => s[1]);
   // optional "why" for a flag (C7). fall/win are SHOOTING observations, not official results (those = Equipe).
-  const FLAG_REASONS = [["Hero", "hero"], ["Emotion", "emotion"], ["Fall", "fall"], ["Win", "win"], ["Sponsor", "sponsor"], ["Funny", "funny"]];
+  const FLAG_REASONS = [["Hero", "hero"], ["Emotion", "emotion"], ["Fall", "fall"], ["🥇 Win", "win"], ["Sponsor", "sponsor"], ["Funny", "funny"]];
   const CAMERAS = ["FX6", "1DX3"];   // A3: which body shot it -> per-camera clock offset at ingest
   // B6: standing b-roll/atmosphere "shopping list" - tick each through the day (keys match field_logger.py)
   const BROLL_TARGETS = [["Coursewalk", "coursewalk"], ["Crowd", "crowd"], ["Sponsor boards", "sponsor"],
@@ -56,6 +56,7 @@
     geo: null,              // {lat, lon, acc, t_ms} - one venue stamp
     loggedNos: {},          // start_no -> true (list marker)
     curCamera: "FX6",       // A3: active camera, tagged on each event for per-camera offsets
+    winners: {},            // start_no -> true: gold/medal winners to chase (ceremony + reactions)
   };
   let uploadOK = false;     // true when served from the PC (./upload reachable)
 
@@ -170,7 +171,7 @@
       localStorage.setItem(LS_KEY, JSON.stringify({
         meta: state.meta, curIndex: state.curIndex, curActivity: state.curActivity,
         openSeg: state.openSeg, events: state.events, sync: state.sync, geo: state.geo, loggedNos: state.loggedNos,
-        curCamera: state.curCamera,
+        curCamera: state.curCamera, winners: state.winners,
       }));
     } catch (e) { /* quota / private mode - keep running from memory */ }
   }
@@ -183,7 +184,7 @@
         Object.assign(state, {
           curIndex: s.curIndex || 0, curActivity: s.curActivity || null, openSeg: s.openSeg || null,
           events: s.events || [], sync: s.sync || [], geo: s.geo || null, loggedNos: s.loggedNos || {},
-          curCamera: s.curCamera || "FX6",
+          curCamera: s.curCamera || "FX6", winners: s.winners || {},
         });
         return true;
       }
@@ -274,10 +275,24 @@
         if (state.events[i].kind === "flag") { state.events[i].reason = reason; break; }
       }
     }
+    if (reason === "win") markWinner(curRider().start_no, true);   // 🥇 a winning round -> mark the rider gold (chase ceremony)
     buzz(HAPTIC.flag);
     hideReasonBar();
-    render(); save();
+    buildList(); render(); save();
   }
+  /* ---- gold winners (chase ceremony + reactions). Marked by a 🥇 Win flag, or toggled by long-press. ---- */
+  function markWinner(no, on) {
+    if (no == null) return;
+    if (on) state.winners[no] = true; else delete state.winners[no];
+    save(); buildList(); render();
+  }
+  function toggleWinner(no) {
+    if (no == null) { const r = curRider(); no = r.start_no; }
+    if (no == null) return;
+    markWinner(no, !state.winners[no]);
+    if (state.winners[no]) buzz(HAPTIC.flag);
+  }
+  function winnerNos() { return Object.keys(state.winners).map(Number).filter((n) => !isNaN(n)).sort((a, b) => a - b); }
   function buildReasonChips() {
     const wrap = $("reasonBar"); if (!wrap) return;
     wrap.innerHTML = "";
@@ -500,16 +515,31 @@
       wrap.appendChild(b);
     });
   }
+  let _lpFired = false;   // a long-press just toggled a winner -> swallow the click that follows
+  function attachLongPress(el, fn) {
+    let timer = null;
+    const start = () => { timer = setTimeout(() => { timer = null; _lpFired = true; fn(); }, 550); };
+    const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
+    el.addEventListener("touchstart", start, { passive: true });
+    el.addEventListener("touchmove", cancel, { passive: true });
+    el.addEventListener("touchend", cancel);
+    el.addEventListener("touchcancel", cancel);
+    el.addEventListener("mousedown", start);
+    el.addEventListener("mouseup", cancel);
+    el.addEventListener("mouseleave", cancel);
+  }
   function buildList() {
     const list = $("list"); list.innerHTML = "";
     state.riders.forEach((r, i) => {
+      const isWin = r.start_no != null && !!state.winners[r.start_no];
       const row = document.createElement("div");
-      row.className = "row" + (i === state.curIndex ? " cur" : "") + (r.start_no != null && state.loggedNos[r.start_no] ? " logged" : "") + (r.priority ? " pri" : "");
+      row.className = "row" + (i === state.curIndex ? " cur" : "") + (r.start_no != null && state.loggedNos[r.start_no] ? " logged" : "") + (r.priority ? " pri" : "") + (isWin ? " win" : "");
       row.innerHTML =
         '<div class="rno">' + (r.start_no == null ? "▦" : r.start_no) + "</div>" +
-        '<div class="rn">' + (r.priority ? '<span class="pristar">★</span>' : "") + escapeHtml(r.rider) + (r.horse ? ' <span class="rh">· ' + escapeHtml(r.horse) + "</span>" : "") + "</div>" +
+        '<div class="rn">' + (isWin ? '<span class="goldmark">🥇</span>' : "") + (r.priority ? '<span class="pristar">★</span>' : "") + escapeHtml(r.rider) + (r.horse ? ' <span class="rh">· ' + escapeHtml(r.horse) + "</span>" : "") + "</div>" +
         '<div class="mk">' + (r.start_no != null && state.loggedNos[r.start_no] ? "✓" : "") + "</div>";
-      row.onclick = () => selectRider(i);
+      row.onclick = () => { if (_lpFired) { _lpFired = false; return; } selectRider(i); };   // long-press = mark winner; tap = select
+      if (r.start_no != null) attachLongPress(row, () => toggleWinner(r.start_no));
       list.appendChild(row);
     });
   }
@@ -552,6 +582,7 @@
     $("curRider").textContent = r.rider;
     $("curHorse").textContent = r.horse || "";
     document.getElementById("current").classList.toggle("pri", !!r.priority);
+    document.getElementById("current").classList.toggle("win", r.start_no != null && !!state.winners[r.start_no]);
     $("curAngle").textContent = r.angle || "";
     document.querySelectorAll(".act").forEach((b) => b.classList.toggle("on", b.dataset.type === state.curActivity));
     $("flagBtn").classList.toggle("on", !!(state.openSeg && state.openSeg.flag));
@@ -617,8 +648,12 @@
     flaggedSegs.forEach((e) => { if (e.flag_reason) reasons[e.flag_reason] = (reasons[e.flag_reason] || 0) + 1; });
     const ridersLogged = new Set(Object.keys(state.loggedNos).map(Number).concat(state.openSeg && state.openSeg.start_no != null ? [state.openSeg.start_no] : [])).size;
     const totalRiders = state.riders.filter((r) => r.start_no != null).length;
+    const shotNos = new Set(state.events.filter((e) => e.kind === "shot" && e.start_no != null).map((e) => e.start_no));
+    const winners = winnerNos();
+    const winnersUncovered = winners.filter((n) => !shotNos.has(n));   // gold winners with no shot yet = chase the ceremony
     return { segs: segs, notes: notes, flags: flagEvents.length + flaggedSegs.length, reasons: reasons,
-      ridersLogged: ridersLogged, totalRiders: totalRiders, cov: coverageSummary(), synced: state.sync.length, geo: !!state.geo };
+      ridersLogged: ridersLogged, totalRiders: totalRiders, cov: coverageSummary(), synced: state.sync.length, geo: !!state.geo,
+      winners: winners, winnersUncovered: winnersUncovered };
   }
   function renderWrap() {
     const d = debriefSummary();
@@ -637,6 +672,10 @@
     let brTxt = brl.covered.length + " / " + BROLL_KEYS.length;
     if (brl.missing.length && brl.total) brTxt += " · need " + brl.missing.slice(0, 3).map((k) => BROLL_TARGETS.find((b) => b[1] === k)[0]).join(", ") + (brl.missing.length > 3 ? "…" : "");
     html += row("B-roll", brTxt);
+    if (d.winners && d.winners.length) {
+      const wn = d.winners.map((n) => { const r = state.riders.find((x) => x.start_no === n); return r ? (n + " " + r.rider) : String(n); });
+      html += row("🥇 Winners", wn.join(", ") + (d.winnersUncovered.length ? "  (" + d.winnersUncovered.length + " no shot yet)" : ""), d.winnersUncovered.length > 0);
+    }
     if (d.cov.priority && d.cov.priority.length) html += row("Priority covered", (d.cov.priority.length - d.cov.priority_uncovered.length) + " / " + d.cov.priority.length, d.cov.priority_uncovered.length > 0);
     if (d.cov.uncovered.length) html += row("Logged, no shot", d.cov.uncovered.length, true);
     html += row("Clock sync", d.synced ? ("synced ×" + d.synced) : "not synced", !d.synced);
@@ -763,13 +802,14 @@
       state, settings, getExport: buildExport, selectRider, setActivity, nextRider, prevRider,
       toggleFlag, setFlagReason, logShot, logBroll, brollSummary, coverageSummary, debriefSummary, openWrap, cycleCamera, addNote, addSync, setGeo, captureGeo, sendToPC, loadStartlistData,
       acquireWake, releaseWake, isStandalone, maybeShowInstall, dismissInstall, fitShell,
+      toggleWinner, markWinner, winnerNos,
     };
     window.__FL_READY = true;
   }
   // allow tests to inject a start list object directly (no network)
   function loadStartlistData(data) {
     applyStartlist(data);
-    state.events = []; state.sync = []; state.geo = null; state.loggedNos = {}; state.openSeg = null;
+    state.events = []; state.sync = []; state.geo = null; state.loggedNos = {}; state.openSeg = null; state.winners = {};
     state.curIndex = state.riders.length > 1 ? 1 : 0; state.curActivity = null;
     buildList(); render();   // no open segment until the user taps a rider/activity
   }
