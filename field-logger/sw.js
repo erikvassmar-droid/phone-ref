@@ -1,6 +1,6 @@
 /* Service worker - offline app shell. Cache-first so the logger works with no signal at the venue.
  * Assets are added individually (allSettled) so a missing startlist.json never breaks the install. */
-const CACHE = "eqfl-v14";
+const CACHE = "eqfl-v15";
 const ASSETS = ["./", "index.html", "app.js", "qrcode.js", "manifest.webmanifest",
   "icon-192.png", "icon-512.png", "startlist.json", "startlist.sample.json", "cheatsheet.html"];
 

@@ -76,6 +76,13 @@
     document.body.classList.toggle("big", !!settings.big);
     const b = $("bigBtn"); if (b) b.classList.toggle("on", !!settings.big);
   }
+  /* Pin the app shell to the real viewport height in px. CSS 100svh/100dvh can recompute to a sliver
+     across a reflow (e.g. toggling big mode) → the flex column collapses and overflow:hidden blanks the
+     screen with the footer stranded at the top. An explicit innerHeight px never collapses; we refresh
+     it on resize/orientation (the URL bar show/hide fires resize) so it stays correct. */
+  function fitShell() {
+    try { if (window.innerHeight) document.body.style.height = window.innerHeight + "px"; } catch (e) { /* ignore */ }
+  }
   function updateHapticBtn() {
     const b = $("hapticBtn"); if (b) b.textContent = "Haptics: " + (settings.haptics ? "on" : "off") + (canVibrate ? "" : " (n/a)");
   }
@@ -735,10 +742,15 @@
     setInterval(tick, 250); tick();
     if ("serviceWorker" in navigator) { try { navigator.serviceWorker.register("sw.js"); } catch (e) { /* offline cache optional */ } }
     probeUpload();
+    fitShell();
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", fitShell);
+      window.addEventListener("orientationchange", fitShell);
+    }
     applyBig(); updateHapticBtn(); updateWakeBtn();
     acquireWake();   // keep the screen on for the shoot (re-acquired below when the app returns to the foreground)
     if (typeof document !== "undefined") {
-      document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") acquireWake(); });
+      document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { acquireWake(); fitShell(); } });
     }
     if (typeof window !== "undefined") {
       window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredInstall = e; maybeShowInstall(); });
@@ -750,7 +762,7 @@
     window.FL = {
       state, settings, getExport: buildExport, selectRider, setActivity, nextRider, prevRider,
       toggleFlag, setFlagReason, logShot, logBroll, brollSummary, coverageSummary, debriefSummary, openWrap, cycleCamera, addNote, addSync, setGeo, captureGeo, sendToPC, loadStartlistData,
-      acquireWake, releaseWake, isStandalone, maybeShowInstall, dismissInstall,
+      acquireWake, releaseWake, isStandalone, maybeShowInstall, dismissInstall, fitShell,
     };
     window.__FL_READY = true;
   }
