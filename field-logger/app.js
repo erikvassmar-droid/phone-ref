@@ -60,7 +60,7 @@
   let uploadOK = false;     // true when served from the PC (./upload reachable)
 
   /* ---- settings + haptic feedback (eyes-free: log without looking away from the camera) ---- */
-  const settings = { haptics: true, big: false };
+  const settings = { haptics: true, big: false, keepAwake: true };
   const canVibrate = typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
   function buzz(p) { if (!settings.haptics || !canVibrate || p == null) return; try { navigator.vibrate(p); } catch (e) { /* no-op */ } }
   function loadSettings() {
@@ -68,6 +68,7 @@
       const s = JSON.parse(localStorage.getItem(SET_KEY) || "{}");
       if (typeof s.haptics === "boolean") settings.haptics = s.haptics;
       if (typeof s.big === "boolean") settings.big = s.big;
+      if (typeof s.keepAwake === "boolean") settings.keepAwake = s.keepAwake;
     } catch (e) { /* keep defaults */ }
   }
   function saveSettings() { try { localStorage.setItem(SET_KEY, JSON.stringify(settings)); } catch (e) { /* ignore */ } }
@@ -77,6 +78,58 @@
   }
   function updateHapticBtn() {
     const b = $("hapticBtn"); if (b) b.textContent = "Haptics: " + (settings.haptics ? "on" : "off") + (canVibrate ? "" : " (n/a)");
+  }
+
+  /* ---- wake lock: keep the screen on during a shoot (camera-mounted, eyes on the viewfinder) ---- */
+  const canWake = typeof navigator !== "undefined" && "wakeLock" in navigator;
+  let wakeSentinel = null;
+  async function acquireWake() {
+    if (!settings.keepAwake || !canWake) return;
+    if (typeof document !== "undefined" && document.visibilityState && document.visibilityState !== "visible") return;
+    if (wakeSentinel) return;
+    try {
+      wakeSentinel = await navigator.wakeLock.request("screen");
+      wakeSentinel.addEventListener("release", () => { wakeSentinel = null; updateWakeBtn(); });
+    } catch (e) { wakeSentinel = null; }   // denied (e.g. low battery) — just carry on
+    updateWakeBtn();
+  }
+  async function releaseWake() {
+    try { if (wakeSentinel) await wakeSentinel.release(); } catch (e) { /* ignore */ }
+    wakeSentinel = null; updateWakeBtn();
+  }
+  function updateWakeBtn() {
+    const b = $("wakeBtn");
+    if (!b) return;
+    b.textContent = "Keep screen on: " + (settings.keepAwake ? "on" : "off")
+      + (canWake ? (settings.keepAwake && wakeSentinel ? " ●" : "") : " (n/a)");
+  }
+
+  /* ---- install nudge: prefer the standalone PWA over a browser tab (reliable insets + full screen) ---- */
+  const INSTALL_KEY = "equisport_fl_install_dismissed_v1";
+  let deferredInstall = null;
+  function isStandalone() {
+    try {
+      return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+    } catch (e) { return false; }
+  }
+  function maybeShowInstall() {
+    const bar = $("installBar"); if (!bar) return;
+    let dismissed = false;
+    try { dismissed = !!localStorage.getItem(INSTALL_KEY); } catch (e) { /* ignore */ }
+    bar.classList.toggle("show", !isStandalone() && !dismissed);
+  }
+  function dismissInstall() {
+    try { localStorage.setItem(INSTALL_KEY, "1"); } catch (e) { /* ignore */ }
+    const bar = $("installBar"); if (bar) bar.classList.remove("show");
+  }
+  async function doInstall() {
+    if (deferredInstall) {
+      try { deferredInstall.prompt(); await deferredInstall.userChoice; } catch (e) { /* ignore */ }
+      deferredInstall = null; dismissInstall();
+    } else {
+      const t = $("installBar") && $("installBar").querySelector(".txt");
+      if (t) t.textContent = "Open the browser ⋮ menu → “Add to Home screen”.";
+    }
   }
 
   /* ---- IndexedDB (audio note blobs as base64 data URLs) ---- */
@@ -661,6 +714,9 @@
     $("coverClose").onclick = closeCover;
     $("bigBtn").onclick = () => { settings.big = !settings.big; saveSettings(); applyBig(); };
     $("hapticBtn").onclick = () => { settings.haptics = !settings.haptics; saveSettings(); updateHapticBtn(); };
+    $("wakeBtn").onclick = () => { settings.keepAwake = !settings.keepAwake; saveSettings(); if (settings.keepAwake) acquireWake(); else releaseWake(); };
+    $("installBtn").onclick = doInstall;
+    $("installX").onclick = dismissInstall;
     $("camPill").onclick = cycleCamera;
     $("wrapBtn").onclick = openWrap;
     $("wrapClose").onclick = closeWrap;
@@ -679,12 +735,22 @@
     setInterval(tick, 250); tick();
     if ("serviceWorker" in navigator) { try { navigator.serviceWorker.register("sw.js"); } catch (e) { /* offline cache optional */ } }
     probeUpload();
-    applyBig(); updateHapticBtn();
+    applyBig(); updateHapticBtn(); updateWakeBtn();
+    acquireWake();   // keep the screen on for the shoot (re-acquired below when the app returns to the foreground)
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") acquireWake(); });
+    }
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredInstall = e; maybeShowInstall(); });
+      window.addEventListener("appinstalled", dismissInstall);
+    }
+    maybeShowInstall();
 
     // test/automation surface
     window.FL = {
       state, settings, getExport: buildExport, selectRider, setActivity, nextRider, prevRider,
       toggleFlag, setFlagReason, logShot, logBroll, brollSummary, coverageSummary, debriefSummary, openWrap, cycleCamera, addNote, addSync, setGeo, captureGeo, sendToPC, loadStartlistData,
+      acquireWake, releaseWake, isStandalone, maybeShowInstall, dismissInstall,
     };
     window.__FL_READY = true;
   }

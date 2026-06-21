@@ -37,6 +37,8 @@ URL, not the plain-http LAN serve.)
 | **FX6 / 1DX3 pill** | tag the active camera; ingest applies each camera's own clock offset to a mixed session |
 | **B-roll checklist** (in Coverage) | tick the standing cutaways (coursewalk / crowd / sponsor / stable / venue / weather / details / atmosphere) |
 | **⤢ big mode + haptics** | a giant current-rider card and a buzz on every log, so you log without leaving the viewfinder |
+| **Keep screen on** | a wake-lock (Sync panel toggle, on by default) so the display doesn't sleep mid-shoot on the mount |
+| **Install nudge** | in a browser tab it offers *Add to Home screen* — run it standalone for full-screen + reliable nav-bar insets (tuned for a Galaxy Note 9, 360 px / on-screen nav bar) |
 | **📋 Card summary** | end-of-card debrief: counts, coverage + priority gaps, sync/GPS status, then Send / Export |
 
 `build` flags `--priority <comma start_nos \| JSON squad/names>` and `--storyprep <tdb storyprep .md \| JSON>`
