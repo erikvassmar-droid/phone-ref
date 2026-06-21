@@ -20,6 +20,7 @@
   body{
     background:var(--bg); color:var(--txt); font-family:-apple-system,Segoe UI,Roboto,system-ui,sans-serif;
     display:flex; flex-direction:column; height:100vh; height:100svh; overflow:hidden;  /* svh = stable; 100dvh collapsed across a reflow → blanked big mode */
+    position:relative;   /* containing block for #reasonBar (anchored to the body, not the under-nav-bar viewport) */
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
   header{display:flex; align-items:center; gap:10px; padding:8px 12px; border-bottom:1px solid var(--line)}
@@ -105,7 +106,7 @@
   footer button.exp{background:var(--green); color:#04150a; border-color:var(--green)}
 
   /* sync overlay */
-  #sync{position:fixed; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
+  #sync{position:absolute; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
     padding-top:calc(env(safe-area-inset-top) + 16px); padding-bottom:calc(env(safe-area-inset-bottom) + 16px); overflow-y:auto}
   #sync.show{display:flex}
   #sync h2{margin:0 0 4px; font-size:16px}
@@ -133,7 +134,7 @@
   footer button.snd{background:var(--panel2); color:var(--green); border-color:var(--green-dim)}
 
   /* coverage overlay */
-  #cover{position:fixed; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
+  #cover{position:absolute; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
     padding-top:calc(env(safe-area-inset-top) + 16px); padding-bottom:calc(env(safe-area-inset-bottom) + 16px); overflow-y:auto}
   #cover.show{display:flex}
   #cover h2{margin:0 0 10px; font-size:16px}
@@ -162,18 +163,20 @@
   .broll.covered::before{content:"✓ "; color:var(--green)}
   .hidden{display:none !important}
 
-  /* flag-reason chips (C7) - transient bar above the footer (offset by the nav-bar safe area so the
-     chips never slide under Android's navigation buttons; the footer itself clears it via body padding) */
-  #reasonBar{position:fixed; left:0; right:0; bottom:calc(64px + env(safe-area-inset-bottom)); z-index:15; display:flex; gap:7px; padding:10px 12px;
+  /* flag-reason chips (C7) - transient bar above the footer. ANCHORED TO THE BODY (position:absolute),
+     not the viewport: in a browser tab Android reports env(safe-area-inset-bottom)=0 yet viewport-fit=cover
+     puts a fixed bottom UNDER the nav bar. The body is pinned by fitShell to the nav-bar-excluded height,
+     so absolute bottom sits above the footer + above the nav bar in both tab and installed-PWA modes. */
+  #reasonBar{position:absolute; left:0; right:0; bottom:64px; z-index:15; display:flex; gap:7px; padding:10px 12px;
     justify-content:center; flex-wrap:wrap; background:linear-gradient(180deg,rgba(0,0,0,0),#000 35%);
-    transform:translateY(135%); transition:transform .18s ease; pointer-events:none}
+    transform:translateY(220%); transition:transform .18s ease; pointer-events:none}   /* 220% so the hidden bar fully clears the footer (no peeking) */
   #reasonBar.show{transform:translateY(0); pointer-events:auto}
   #reasonBar .rsn{height:46px; padding:0 15px; border-radius:999px; border:1px solid #5a4520; background:#1c1505;
     color:var(--amber); font-size:14px; font-weight:700}
   #flagBtn.on #flagLbl{color:var(--amber)}
 
   /* end-of-card debrief (C8) */
-  #wrap{position:fixed; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
+  #wrap{position:absolute; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
     padding-top:calc(env(safe-area-inset-top) + 16px); padding-bottom:calc(env(safe-area-inset-bottom) + 16px); overflow-y:auto}
   #wrap.show{display:flex}
   #wrap h2{margin:0 0 10px; font-size:16px}
