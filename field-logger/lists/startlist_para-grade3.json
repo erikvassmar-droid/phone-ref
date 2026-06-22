@@ -1,0 +1,44 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260705",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "Para Grand Prix Test A - Grade III",
+  "sec_per_start": 480,
+  "start_at": "2026-06-22 13:30:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Ine Nyhuus",
+      "horse": "Aagaardens Lia",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 2,
+      "rider": "Sanna Koskiluhta",
+      "horse": "Wipfel's Roma K",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 3,
+      "rider": "Renee Claesson-Ribring",
+      "horse": "Zapp VS",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    },
+    {
+      "start_no": 4,
+      "rider": "Pam Svane",
+      "horse": "Raja",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Grevagårdens Ryttarförening (2026-05-16, Grand Prix Test Freestyle ( Old Grade III…"
+    },
+    {
+      "start_no": 5,
+      "rider": "Sandra Lynge Eriksen",
+      "horse": "Inzurgenzy Firfod",
+      "nation": "DEN"
+    }
+  ]
+}

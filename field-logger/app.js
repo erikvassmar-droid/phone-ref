@@ -18,6 +18,8 @@
   "use strict";
   const SCHEMA = "equisport.field_session/1";
   const LS_KEY = "equisport_field_session_v1";
+  const CLASS_INDEX_URL = "lists/index.json";          // the day's classes (served from Pages, same origin)
+  const PICK_KEY = "equisport_fl_class";               // remember the class picked on this phone
 
   // label, field_log "type", emoji. Types align with field_log.py detect_type where one exists.
   const ACTIVITIES = [
@@ -57,6 +59,8 @@
     loggedNos: {},          // start_no -> true (list marker)
     curCamera: "FX6",       // A3: active camera, tagged on each event for per-camera offsets
     winners: {},            // start_no -> true: gold/medal winners to chase (ceremony + reactions)
+    classes: [],            // the day's class index (for the on-phone class picker)
+    classFile: "",          // the active class's list file
   };
   let uploadOK = false;     // true when served from the PC (./upload reachable)
 
@@ -721,6 +725,76 @@
     if (!data) { setStatus("No startlist.json - generate with: field_logger.py build --section <id>"); return; }
     applyStartlist(data);
   }
+
+  /* ---- on-phone class picker: the day's classes served from Pages (lists/index.json). The phone is online
+     but there's no PC at the venue, so it switches classes itself instead of the PC re-serving each list. ---- */
+  function loadClassIndexData(idx) {
+    state.classes = (idx && idx.classes) ? idx.classes.slice() : [];
+    updateClassHeader();
+    return state.classes.length > 0;
+  }
+  async function loadClassIndex() {
+    try {
+      const r = await fetch(CLASS_INDEX_URL, { cache: "no-store" });
+      if (r.ok) return loadClassIndexData(await r.json());
+    } catch (e) { /* no index -> single-list mode */ }
+    return false;
+  }
+  function currentClassByTime() {
+    // the class to open now = the latest one whose start time has passed (minus a 20-min lead), else the first
+    if (!state.classes.length) return null;
+    const lead = 20 * 60000, t = now();
+    let pick = state.classes[0];
+    state.classes.forEach((c) => { const cs = timeToToday(c.start_at); if (cs != null && cs - lead <= t) pick = c; });
+    return pick;
+  }
+  function updateClassHeader() {
+    const el = $("clsBtn"); if (el) el.classList.toggle("pickable", state.classes.length > 1);
+  }
+  async function pickClass(file) {
+    let data = null;
+    try { const r = await fetch("lists/" + file, { cache: "no-store" }); if (r.ok) data = await r.json(); } catch (e) { /* ignore */ }
+    if (!data) { setStatus("Could not load class list: " + file); return false; }
+    state.classFile = file;
+    try { localStorage.setItem(PICK_KEY, file); } catch (e) { /* ignore */ }
+    loadStartlistData(data);
+    closePicker();
+    return true;
+  }
+  function pickClassData(data, file) {   // test hook: switch class with an injected list
+    state.classFile = file || "";
+    try { localStorage.setItem(PICK_KEY, state.classFile); } catch (e) { /* ignore */ }
+    loadStartlistData(data);
+    closePicker();
+  }
+  async function loadClassForStartup(file) {
+    // startup load: apply the list but DON'T reset (so restore() can resume an in-progress card for this class)
+    let data = null;
+    try { const r = await fetch("lists/" + file, { cache: "no-store" }); if (r.ok) data = await r.json(); } catch (e) { /* ignore */ }
+    if (!data) return false;
+    state.classFile = file; applyStartlist(data); return true;
+  }
+  function openPicker() { renderPicker(); $("picker").classList.add("show"); }
+  function closePicker() { const p = $("picker"); if (p) p.classList.remove("show"); }
+  function renderPicker() {
+    const body = $("pickerBody"); if (!body) return;
+    if (!state.classes.length) { body.innerHTML = '<div class="note">No class list loaded.</div>'; return; }
+    body.innerHTML = state.classes.map((c) => {
+      const active = c.file === state.classFile;
+      return '<button class="pcls' + (active ? " on" : "") + '" data-file="' + escapeHtml(c.file) + '">' +
+        '<span class="pt">' + escapeHtml(c.start_at || "") + "</span>" +
+        '<span class="pn">' + escapeHtml(c.label || c.file) + "</span>" +
+        '<span class="pm">' + (c.riders || "?") + (c.swe ? " · " + c.swe + "★" : "") + "</span></button>";
+    }).join("");
+    body.querySelectorAll(".pcls").forEach((b) => {
+      b.onclick = () => {
+        const file = b.dataset.file;
+        if (file === state.classFile) { closePicker(); return; }
+        if (state.events.length && !confirm("Switch class? Export the current card first — unexported taps will clear.")) return;
+        pickClass(file);
+      };
+    });
+  }
   function applyStartlist(data) {
     state.meta = {
       section_id: String(data.section_id || ""), competition: data.competition || "",
@@ -744,7 +818,13 @@
     buildShotChips();
     buildReasonChips();
     buildBrollChips();
-    await loadStartlist();
+    let loaded = false;
+    if (await loadClassIndex()) {   // the day's classes are on Pages -> open the remembered class, else the one due now
+      let remembered = ""; try { remembered = localStorage.getItem(PICK_KEY) || ""; } catch (e) { /* ignore */ }
+      const start = state.classes.some((c) => c.file === remembered) ? remembered : ((currentClassByTime() || {}).file || "");
+      if (start) loaded = await loadClassForStartup(start);
+    }
+    if (!loaded) await loadStartlist();
     const resumed = restore();
     if (!resumed) { state.curIndex = state.riders.length > 1 ? 1 : 0; }  // point at rider 1; no segment until you act
     buildList(); render();
@@ -766,6 +846,8 @@
     $("camPill").onclick = cycleCamera;
     $("wrapBtn").onclick = openWrap;
     $("wrapClose").onclick = closeWrap;
+    $("clsBtn").onclick = () => { if (state.classes.length) openPicker(); };
+    $("pickerClose").onclick = closePicker;
     $("wrapExport").onclick = async () => { await exportDownload(); $("wrapMsg").textContent = $("status").textContent; };
     $("wrapSend").onclick = async () => { await sendToPC(); $("wrapMsg").textContent = $("status").textContent; };
     $("syncSave").onclick = () => {
@@ -803,6 +885,7 @@
       toggleFlag, setFlagReason, logShot, logBroll, brollSummary, coverageSummary, debriefSummary, openWrap, cycleCamera, addNote, addSync, setGeo, captureGeo, sendToPC, loadStartlistData,
       acquireWake, releaseWake, isStandalone, maybeShowInstall, dismissInstall, fitShell,
       toggleWinner, markWinner, winnerNos,
+      loadClassIndex, loadClassIndexData, openPicker, closePicker, pickClass, pickClassData, currentClassByTime,
     };
     window.__FL_READY = true;
   }

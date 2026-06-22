@@ -1,0 +1,120 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260698",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "Junior Team Competition (J Team)",
+  "sec_per_start": 480,
+  "start_at": "2026-06-22 10:30:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Ingse Hagevik",
+      "horse": "Thybo's Sylvester",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 2,
+      "rider": "Cecilie Gautier Christensen",
+      "horse": "Lorence de Jeu",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 3,
+      "rider": "Erla Argus",
+      "horse": "Elverhojs Olympia",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 6 at Grevagårdens Ryttarförening (2026-05-17, FEI:s Kür (J)). • Recent heights up to 10…"
+    },
+    {
+      "start_no": 4,
+      "rider": "Mikaela Sinda",
+      "horse": "Hagels Debeers",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 5,
+      "rider": "Mathea Berg Sandnes",
+      "horse": "Rockabye",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 6,
+      "rider": "Emilie Hansen",
+      "horse": "Sensation Unik",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 7,
+      "rider": "Hildur Elfgren",
+      "horse": "Anemon Van S",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 4 at Grevagårdens Ryttarförening (2026-05-15, FEI:s Individuella Mästerskapsprogram Msv…"
+    },
+    {
+      "start_no": 8,
+      "rider": "Peppi Kangasjärvi",
+      "horse": "Ds Smartakus",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 9,
+      "rider": "Kirke Ehandi",
+      "horse": "Re-DI",
+      "nation": "EST"
+    },
+    {
+      "start_no": 10,
+      "rider": "Sofie Malena Klev",
+      "horse": "Romeo",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 11,
+      "rider": "Malou Birkemose Sigtenbjerggaard",
+      "horse": "Skikkild's Affection",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 12,
+      "rider": "Tilda André Hokfelt",
+      "horse": "Zaragossa",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Flyinge Hästsportklubb (2026-05-31, FEI:s Kür (J)). • 1 win(s) in recent starts. •…"
+    },
+    {
+      "start_no": 13,
+      "rider": "Aino Sellman",
+      "horse": "Lapinjarvi Sabroso",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 14,
+      "rider": "Matilde Malmberg",
+      "horse": "Ac's Pik Midaz",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 15,
+      "rider": "Sofie Aagaard Buur-Thomsen",
+      "horse": "Hodja Hoejris",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 16,
+      "rider": "Ebba Wallin",
+      "horse": "Fascinate KR",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    },
+    {
+      "start_no": 17,
+      "rider": "Armi Pietarinen",
+      "horse": "Lisbeth S",
+      "nation": "FIN"
+    }
+  ]
+}

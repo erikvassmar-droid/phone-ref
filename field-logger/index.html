@@ -137,6 +137,21 @@
   .shot.hit{background:var(--green); color:#04150a; border-color:var(--green)}
   footer button.snd{background:var(--panel2); color:var(--green); border-color:var(--green-dim)}
 
+  /* class picker (the day's classes from Pages) */
+  .cls#clsBtn.pickable{cursor:pointer}
+  .cls#clsBtn.pickable .name::after{content:" ▾"; color:var(--green); font-size:12px}
+  #picker{position:absolute; inset:0; background:#000; z-index:21; display:none; flex-direction:column; padding:16px;
+    padding-top:calc(env(safe-area-inset-top) + 16px); padding-bottom:calc(env(safe-area-inset-bottom) + 16px); overflow-y:auto}
+  #picker.show{display:flex}
+  #picker h2{margin:0 0 10px; font-size:16px}
+  #pickerBody{flex:1; min-height:0; display:flex; flex-direction:column; gap:8px}
+  .pcls{display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:13px 14px; border-radius:12px;
+    border:1px solid var(--line); background:var(--panel2); color:var(--txt)}
+  .pcls.on{border-color:var(--green); background:#10210f}
+  .pcls .pt{font-weight:800; font-size:15px; color:var(--green); min-width:48px; font-variant-numeric:tabular-nums}
+  .pcls .pn{flex:1; min-width:0; font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .pcls .pm{font-size:12px; color:var(--mut); white-space:nowrap}
+
   /* coverage overlay */
   #cover{position:absolute; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
     padding-top:calc(env(safe-area-inset-top) + 16px); padding-bottom:calc(env(safe-area-inset-bottom) + 16px); overflow-y:auto}
@@ -220,7 +235,7 @@
 </head>
 <body>
   <header>
-    <div class="cls"><div class="name" id="clsName">Field Logger</div><div class="sub" id="clsSub">no class loaded</div></div>
+    <div class="cls" id="clsBtn"><div class="name" id="clsName">Field Logger</div><div class="sub" id="clsSub">no class loaded</div></div>
     <button id="wrapBtn" class="hbtn" aria-label="card summary" title="End-of-card summary">📋</button>
     <button id="bigBtn" class="hbtn" aria-label="big mode" title="Big mode (eyes-free)">⤢</button>
     <button id="camPill" class="pill cam" title="Active camera (tap to switch)">FX6</button>
@@ -293,6 +308,13 @@
       <div id="brollGrid"><!-- b-roll target chips injected --></div>
     </div>
     <div class="btns"><button id="coverClose">Close</button></div>
+  </div>
+
+  <!-- class picker: the day's classes (served from Pages); tap the header class name to switch -->
+  <div id="picker">
+    <h2>Pick class</h2>
+    <div id="pickerBody"><!-- class buttons injected --></div>
+    <div class="btns"><button id="pickerClose">Close</button></div>
   </div>
 
   <!-- flag-reason chips (C7): pop up after you flag, optional one-tap why, auto-dismiss -->

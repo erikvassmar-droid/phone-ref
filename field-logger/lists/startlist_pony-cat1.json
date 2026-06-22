@@ -1,0 +1,120 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260693",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "Pony Riders kat. I Team Competition",
+  "sec_per_start": 450,
+  "start_at": "2026-06-22 08:00:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Maria Suhonen",
+      "horse": "Viljam",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 2,
+      "rider": "Tilde Bjoernvik Loe",
+      "horse": "Strandgaards Dr. Watson",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 3,
+      "rider": "Maja Kruse Tarp",
+      "horse": "Dressed de Luxe",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 4,
+      "rider": "Ella Jerlin",
+      "horse": "Piri Piri",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Grevagårdens Ryttarförening (2026-05-17, FEI:s Ponnykür). • 3 win(s) in recent sta…"
+    },
+    {
+      "start_no": 5,
+      "rider": "Aino Hallasaari",
+      "horse": "Fairytale Twilight",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 6,
+      "rider": "Eunike Berner",
+      "horse": "Strathmill",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 7,
+      "rider": "Lærke Mercedes Melin",
+      "horse": "Steendieks My Lord",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 8,
+      "rider": "Elin Stenberg",
+      "horse": "Hilkens Dancing Gold",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Kågedalens Ryttarförening (2013-06-01, 100, A). • 3 win(s) in recent starts. • 5 t…"
+    },
+    {
+      "start_no": 9,
+      "rider": "Iida-Sofia Alasuutari",
+      "horse": "Cato 88",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 10,
+      "rider": "Nora Naes Haug",
+      "horse": "Steendieks Catalido",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 11,
+      "rider": "Laura Amalie Odgaard",
+      "horse": "Biebosschen Dolino EC",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 12,
+      "rider": "Samantha Arnbäck",
+      "horse": "Mister Prime Time",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 2 at Grevagårdens Ryttarförening (2026-05-16, FEI:s Individuella Mästerskapsprogram Chi…"
+    },
+    {
+      "start_no": 13,
+      "rider": "Marion Saar",
+      "horse": "Proud Boy",
+      "nation": "EST"
+    },
+    {
+      "start_no": 14,
+      "rider": "Nelli-Maria Inna",
+      "horse": "Pin Rock's Devil's Double",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 15,
+      "rider": "Lis Helena Savannah Andreassen",
+      "horse": "Mr Bojengel",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 16,
+      "rider": "Emily Lee Vestergaard",
+      "horse": "Tackmann's Dark Deluxe",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 17,
+      "rider": "Wilma Holmgren",
+      "horse": "Neverland WE",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Nordhallands Ridklubb (2025-11-02, FEI:s Lagtävlansprogram för ponny). • 1 win(s)…"
+    }
+  ]
+}

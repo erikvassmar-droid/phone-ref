@@ -1,0 +1,90 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260702",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "U25  - Intermediate II (Int II)",
+  "sec_per_start": 480,
+  "start_at": "2026-06-22 17:15:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Emilie Balling Nissen",
+      "horse": "Fuerstenblick",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 2,
+      "rider": "Mimi Letzén",
+      "horse": "Floppy Disc",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    },
+    {
+      "start_no": 3,
+      "rider": "Laura Elisabeth Kjær Rohmann",
+      "horse": "Zugar Ray",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 4,
+      "rider": "Veera Paloheimo",
+      "horse": "Sanmourano Van Nova Stables",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 5,
+      "rider": "Camilla Holen Soensteby",
+      "horse": "Papillon",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 6,
+      "rider": "Ellen Lindén Urnes",
+      "horse": "Delmonte 7",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    },
+    {
+      "start_no": 7,
+      "rider": "Valentin Munkedal",
+      "horse": "Severis Jody",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 8,
+      "rider": "Kristiane Askim Hillern",
+      "horse": "Diaster",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 9,
+      "rider": "Maja Hermansson",
+      "horse": "Diva Pilekaer",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    },
+    {
+      "start_no": 10,
+      "rider": "Kristian Würtz Green",
+      "horse": "Bovbjergs Zhivago",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 11,
+      "rider": "Hannah Theresa Constanze Barlaup",
+      "horse": "Heslegaards Rismon",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 12,
+      "rider": "Mary Sophie Haid Bondergaard",
+      "horse": "St. Louis",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    }
+  ]
+}

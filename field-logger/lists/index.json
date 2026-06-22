@@ -1,0 +1,77 @@
+{
+ "event": "NBECH 2026 — Dressage & Para",
+ "date": "2026-06-22",
+ "generated": "2026-06-22 07:26",
+ "classes": [
+  {
+   "label": "Pony Riders kat. I Team Competition",
+   "file": "startlist_pony-cat1.json",
+   "start_at": "08:00",
+   "riders": 17,
+   "swe": 4
+  },
+  {
+   "label": "PONY KAT. 2 TEAM TEST - FEI Lagtävlansprogram ponny",
+   "file": "startlist_pony-cat2.json",
+   "start_at": "08:30",
+   "riders": 9,
+   "swe": 4
+  },
+  {
+   "label": "Junior Team Competition (J Team)",
+   "file": "startlist_junior.json",
+   "start_at": "10:30",
+   "riders": 17,
+   "swe": 4
+  },
+  {
+   "label": "Children Preliminary Competition B (Ch Prel B)",
+   "file": "startlist_children.json",
+   "start_at": "11:00",
+   "riders": 8,
+   "swe": 4
+  },
+  {
+   "label": "Para Grand Prix Test A - Grade III",
+   "file": "startlist_para-grade3.json",
+   "start_at": "13:30",
+   "riders": 5,
+   "swe": 2
+  },
+  {
+   "label": "Para Grand Prix Test A - Grade II",
+   "file": "startlist_para-grade2.json",
+   "start_at": "14:10",
+   "riders": 1,
+   "swe": 0
+  },
+  {
+   "label": "CH-N.Baltic-D GP - Grand Prix (GP)",
+   "file": "startlist_senior-gp.json",
+   "start_at": "14:30",
+   "riders": 14,
+   "swe": 4
+  },
+  {
+   "label": "Para Grand Prix Test A - Grade IV",
+   "file": "startlist_para-grade4.json",
+   "start_at": "14:40",
+   "riders": 7,
+   "swe": 2
+  },
+  {
+   "label": "Para Grand Prix Test A - Grade V",
+   "file": "startlist_para-grade5.json",
+   "start_at": "15:45",
+   "riders": 8,
+   "swe": 1
+  },
+  {
+   "label": "U25  - Intermediate II (Int II)",
+   "file": "startlist_u25.json",
+   "start_at": "17:15",
+   "riders": 12,
+   "swe": 4
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260706",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "Para Grand Prix Test A - Grade II",
+  "sec_per_start": 480,
+  "start_at": "2026-06-22 14:10:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Suvi Javanainen",
+      "horse": "Pihan Pinkasu",
+      "nation": "FIN"
+    }
+  ]
+}

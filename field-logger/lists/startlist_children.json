@@ -1,0 +1,66 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260695",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "Children Preliminary Competition B (Ch Prel B)",
+  "sec_per_start": 420,
+  "start_at": "2026-06-22 11:00:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Elna Asplund",
+      "horse": "Quaters Diamond",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 4 at Grevagårdens Ryttarförening (2026-05-16, FEI:s Individuella Mästerskapsprogram Chi…"
+    },
+    {
+      "start_no": 2,
+      "rider": "Viggo Bornhager",
+      "horse": "Rosenstolz",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    },
+    {
+      "start_no": 3,
+      "rider": "Tytti Kuukkanen",
+      "horse": "Kastell's Don Diego",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 4,
+      "rider": "Mea Klemola",
+      "horse": "Tiny's Big D",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 5,
+      "rider": "Enni Vähäsarja",
+      "horse": "Sylvian Joseph",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 6,
+      "rider": "Engla Svärd",
+      "horse": "Hamiltons I Did It My Way",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Flyinge (SWE) (2026-03-21, FEI:s Individuella Mästerskapsprogram Children). • 1 wi…"
+    },
+    {
+      "start_no": 7,
+      "rider": "Marta Johanna Lepiksoo",
+      "horse": "Beyonce",
+      "nation": "EST"
+    },
+    {
+      "start_no": 8,
+      "rider": "Signe Liew",
+      "horse": "Latina",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Grevagårdens Ryttarförening (2026-05-14, FEI:s Inledande program B Children). • 1…"
+    }
+  ]
+}

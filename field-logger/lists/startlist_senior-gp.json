@@ -1,0 +1,102 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260700",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "CH-N.Baltic-D GP - Grand Prix (GP)",
+  "sec_per_start": 540,
+  "start_at": "2026-06-22 14:30:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Emelie Brolin",
+      "horse": "Springborgs Awesome",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    },
+    {
+      "start_no": 2,
+      "rider": "Mathilde Koefoed-Nielsen",
+      "horse": "Odin Unik",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 3,
+      "rider": "Mia Runesson Bergqvist",
+      "horse": "Zenit",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Dagstorpsortens Ryttarförening (2026-05-21, FEI:s Inledande program 5-åriga hästar…"
+    },
+    {
+      "start_no": 4,
+      "rider": "Sandra Nicoline Birkeland",
+      "horse": "Jazzlo Hoejris",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 5,
+      "rider": "Dennis Fisker",
+      "horse": "Msj Diamonds Are Forever",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 6,
+      "rider": "Jessica Jokiranta",
+      "horse": "Dusty",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 7,
+      "rider": "Beata Söderberg",
+      "horse": "Talento 4",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 2 at Rappestads Ridklubb (2026-05-08, Medelsvår A:1). • 3 top-3 finish(es) recently. •…"
+    },
+    {
+      "start_no": 8,
+      "rider": "Lucinda Marie Groth",
+      "horse": "Larry Hagman Firfod",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 9,
+      "rider": "Amalie Aasted Albaek",
+      "horse": "Harmony's Zomancier",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 10,
+      "rider": "Katja Kuokka",
+      "horse": "Fillyhill's My Special",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 11,
+      "rider": "Ebba Von Essen",
+      "horse": "Dantes Specter",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "No TDB history found yet."
+    },
+    {
+      "start_no": 12,
+      "rider": "Siri Thelle Tønnesen",
+      "horse": "Bonifatius 8",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 13,
+      "rider": "Cecilie Dybro Jensen",
+      "horse": "Zagori",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 14,
+      "rider": "Ville Vaurio",
+      "horse": "Dante NL",
+      "nation": "FIN"
+    }
+  ]
+}

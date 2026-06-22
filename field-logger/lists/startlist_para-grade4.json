@@ -1,0 +1,56 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260707",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "Para Grand Prix Test A - Grade IV",
+  "sec_per_start": 480,
+  "start_at": "2026-06-22 14:40:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Hanne Soininen",
+      "horse": "La Belleza",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 2,
+      "rider": "Lotta Wallin",
+      "horse": "Questionmark",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Föreningen Mantorpsryttarna (2026-03-01, FEI PE Grad 1a - Team Test 2006). • 2 win…"
+    },
+    {
+      "start_no": 3,
+      "rider": "Anne Mette Hasselstrom",
+      "horse": "Falkaer's Ramoon",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 4,
+      "rider": "Jessica Kerttunen",
+      "horse": "Duyou MI",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 5,
+      "rider": "Louise Etzner Jakobsson",
+      "horse": "Goldstrike B.J.",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Grevagårdens Ryttarförening (2026-05-16, Grand Prix Test Freestyle (Old Grade 4 Fr…"
+    },
+    {
+      "start_no": 6,
+      "rider": "Pia Wulff Jelstrup",
+      "horse": "Celeste M",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 7,
+      "rider": "Line Schlünsen",
+      "horse": "Catniss",
+      "nation": "DEN"
+    }
+  ]
+}

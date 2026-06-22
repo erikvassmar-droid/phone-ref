@@ -1,0 +1,60 @@
+{
+  "schema": "equisport.startlist/1",
+  "section_id": "1260708",
+  "competition": "Nordic Baltic Equestrian Championship - Dressage  & Paradressage 2026",
+  "class_name": "Para Grand Prix Test A - Grade V",
+  "sec_per_start": 480,
+  "start_at": "2026-06-22 15:45:00 +0200",
+  "riders": [
+    {
+      "start_no": 1,
+      "rider": "Tone Rustad",
+      "horse": "Straighthorse Safira",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 2,
+      "rider": "Camilla Christensen",
+      "horse": "Fursten",
+      "nation": "SWE",
+      "priority": true,
+      "angle": "6 recent start(s) on record. • Best recent placing: 1 at Lillhagens Ridklubb (2015-10-11, 110, A). • 2 win(s) in recent starts. • 2 top-3 f…"
+    },
+    {
+      "start_no": 3,
+      "rider": "Kirsten Kristine Vik",
+      "horse": "Bonfire",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 4,
+      "rider": "Mira Antonsen Hjelle",
+      "horse": "Atterupgaards Dora",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 5,
+      "rider": "Taija Härkönen",
+      "horse": "Don Monroy",
+      "nation": "FIN"
+    },
+    {
+      "start_no": 6,
+      "rider": "Christina Marcussen",
+      "horse": "Zorro Hoejris",
+      "nation": "NOR"
+    },
+    {
+      "start_no": 7,
+      "rider": "Frida Broeggler",
+      "horse": "Goerklintgards Salty Sea",
+      "nation": "DEN"
+    },
+    {
+      "start_no": 8,
+      "rider": "Jonna Aaltonen",
+      "horse": "Laxton For U",
+      "nation": "FIN"
+    }
+  ]
+}
