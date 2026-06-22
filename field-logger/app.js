@@ -20,6 +20,8 @@
   const LS_KEY = "equisport_field_session_v1";
   const CLASS_INDEX_URL = "lists/index.json";          // the day's classes (served from Pages, same origin)
   const PICK_KEY = "equisport_fl_class";               // remember the class picked on this phone
+  const ARENA_KEY = "equisport_fl_arena";              // remember which court was active on this phone
+  const ARENA_PICK_KEY = "equisport_fl_class_by_arena";// remember the class picked per court (arena -> file)
 
   // label, field_log "type", emoji. Types align with field_log.py detect_type where one exists.
   const ACTIVITIES = [
@@ -61,6 +63,7 @@
     winners: {},            // start_no -> true: gold/medal winners to chase (ceremony + reactions)
     classes: [],            // the day's class index (for the on-phone class picker)
     classFile: "",          // the active class's list file
+    arena: "",              // active court ("Arena 1"/"Arena 2") on multi-arena days
   };
   let uploadOK = false;     // true when served from the PC (./upload reachable)
 
@@ -731,7 +734,60 @@
   function loadClassIndexData(idx) {
     state.classes = (idx && idx.classes) ? idx.classes.slice() : [];
     updateClassHeader();
+    renderArenaBar();
     return state.classes.length > 0;
+  }
+
+  /* ---- arena switch: two courts run at once; jump between the current class on each ---- */
+  function arenasInDay() {
+    const seen = [];
+    state.classes.forEach((c) => { const a = (c.arena || "").trim(); if (a && seen.indexOf(a) < 0) seen.push(a); });
+    return seen.sort();
+  }
+  function arenaOfFile(file) { const c = state.classes.find((x) => x.file === file); return c ? (c.arena || "") : ""; }
+  function classesForArena(arena) { return state.classes.filter((c) => (c.arena || "") === arena); }
+  function arenaPickMap() {
+    try { return JSON.parse(localStorage.getItem(ARENA_PICK_KEY) || "{}") || {}; } catch (e) { return {}; }
+  }
+  function rememberArenaPick(arena, file) {
+    if (!arena) return;
+    const m = arenaPickMap(); m[arena] = file;
+    try { localStorage.setItem(ARENA_PICK_KEY, JSON.stringify(m)); } catch (e) { /* ignore */ }
+  }
+  function currentClassForArena(arena) {
+    // the class to open on this court = the one manually picked here (if still valid), else the latest whose
+    // start time has passed (20-min lead), else the first class on the court.
+    const list = classesForArena(arena);
+    if (!list.length) return null;
+    const remembered = arenaPickMap()[arena];
+    const hit = remembered ? list.find((c) => c.file === remembered) : null;
+    if (hit) return hit;
+    const lead = 20 * 60000, t = now();
+    let pick = list[0];
+    list.forEach((c) => { const cs = timeToToday(c.start_at); if (cs != null && cs - lead <= t) pick = c; });
+    return pick;
+  }
+  function renderArenaBar() {
+    const bar = $("arenaBar"); if (!bar) return;
+    const arenas = arenasInDay();
+    if (arenas.length < 2) { bar.hidden = true; return; }   // single-court day -> no switch, no wasted space
+    bar.hidden = false;
+    bar.querySelectorAll(".ab").forEach((btn) => {
+      const a = btn.dataset.arena;
+      const cur = currentClassForArena(a);
+      const lab = btn.querySelector(".ac");
+      if (lab) lab.textContent = cur ? (cur.label || cur.file) : "—";
+      btn.classList.toggle("on", a === state.arena);
+    });
+  }
+  async function switchArena(arena) {
+    if (!arena || arena === state.arena) return;
+    if (state.events.length && !confirm("Switch court? Export the current card first — unexported taps will clear.")) return;
+    const cur = currentClassForArena(arena);
+    state.arena = arena;
+    try { localStorage.setItem(ARENA_KEY, arena); } catch (e) { /* ignore */ }
+    renderArenaBar();                                    // highlight the tapped court immediately
+    if (cur) await pickClass(cur.file);
   }
   async function loadClassIndex() {
     try {
@@ -757,6 +813,7 @@
     if (!data) { setStatus("Could not load class list: " + file); return false; }
     state.classFile = file;
     try { localStorage.setItem(PICK_KEY, file); } catch (e) { /* ignore */ }
+    syncArenaToFile(file);
     loadStartlistData(data);
     closePicker();
     return true;
@@ -764,25 +821,37 @@
   function pickClassData(data, file) {   // test hook: switch class with an injected list
     state.classFile = file || "";
     try { localStorage.setItem(PICK_KEY, state.classFile); } catch (e) { /* ignore */ }
+    syncArenaToFile(state.classFile);
     loadStartlistData(data);
     closePicker();
+  }
+  function syncArenaToFile(file) {
+    // keep the active court in step with whatever class is now loaded (picker or arena-bar driven)
+    const a = arenaOfFile(file);
+    if (a) { state.arena = a; rememberArenaPick(a, file); try { localStorage.setItem(ARENA_KEY, a); } catch (e) { /* ignore */ } }
+    renderArenaBar();
   }
   async function loadClassForStartup(file) {
     // startup load: apply the list but DON'T reset (so restore() can resume an in-progress card for this class)
     let data = null;
     try { const r = await fetch("lists/" + file, { cache: "no-store" }); if (r.ok) data = await r.json(); } catch (e) { /* ignore */ }
     if (!data) return false;
-    state.classFile = file; applyStartlist(data); return true;
+    state.classFile = file; syncArenaToFile(file); applyStartlist(data); return true;
   }
   function openPicker() { renderPicker(); $("picker").classList.add("show"); }
   function closePicker() { const p = $("picker"); if (p) p.classList.remove("show"); }
   function renderPicker() {
     const body = $("pickerBody"); if (!body) return;
     if (!state.classes.length) { body.innerHTML = '<div class="note">No class list loaded.</div>'; return; }
-    body.innerHTML = state.classes.map((c) => {
+    const multi = arenasInDay().length >= 2;
+    const ordered = state.classes.slice().sort((a, b) =>
+      String(a.arena || "").localeCompare(String(b.arena || "")) ||
+      String(a.start_at || "").localeCompare(String(b.start_at || "")));
+    body.innerHTML = ordered.map((c) => {
       const active = c.file === state.classFile;
+      const arenaTag = (multi && c.arena) ? '<span class="pa">' + escapeHtml(c.arena.replace("Arena ", "A")) + "</span>" : "";
       return '<button class="pcls' + (active ? " on" : "") + '" data-file="' + escapeHtml(c.file) + '">' +
-        '<span class="pt">' + escapeHtml(c.start_at || "") + "</span>" +
+        '<span class="pt">' + escapeHtml(c.start_at || "") + "</span>" + arenaTag +
         '<span class="pn">' + escapeHtml(c.label || c.file) + "</span>" +
         '<span class="pm">' + (c.riders || "?") + (c.swe ? " · " + c.swe + "★" : "") + "</span></button>";
     }).join("");
@@ -821,7 +890,15 @@
     let loaded = false;
     if (await loadClassIndex()) {   // the day's classes are on Pages -> open the remembered class, else the one due now
       let remembered = ""; try { remembered = localStorage.getItem(PICK_KEY) || ""; } catch (e) { /* ignore */ }
-      const start = state.classes.some((c) => c.file === remembered) ? remembered : ((currentClassByTime() || {}).file || "");
+      let start = state.classes.some((c) => c.file === remembered) ? remembered : "";
+      if (!start && arenasInDay().length >= 2) {
+        // multi-court day: resume the remembered court (else the first), open its current class
+        let arena = ""; try { arena = localStorage.getItem(ARENA_KEY) || ""; } catch (e) { /* ignore */ }
+        if (arenasInDay().indexOf(arena) < 0) arena = arenasInDay()[0];
+        state.arena = arena;
+        start = (currentClassForArena(arena) || {}).file || "";
+      }
+      if (!start) start = (currentClassByTime() || {}).file || "";
       if (start) loaded = await loadClassForStartup(start);
     }
     if (!loaded) await loadStartlist();
@@ -847,6 +924,7 @@
     $("wrapBtn").onclick = openWrap;
     $("wrapClose").onclick = closeWrap;
     $("clsBtn").onclick = () => { if (state.classes.length) openPicker(); };
+    document.querySelectorAll("#arenaBar .ab").forEach((b) => { b.onclick = () => switchArena(b.dataset.arena); });
     $("pickerClose").onclick = closePicker;
     $("wrapExport").onclick = async () => { await exportDownload(); $("wrapMsg").textContent = $("status").textContent; };
     $("wrapSend").onclick = async () => { await sendToPC(); $("wrapMsg").textContent = $("status").textContent; };
@@ -886,6 +964,7 @@
       acquireWake, releaseWake, isStandalone, maybeShowInstall, dismissInstall, fitShell,
       toggleWinner, markWinner, winnerNos,
       loadClassIndex, loadClassIndexData, openPicker, closePicker, pickClass, pickClassData, currentClassByTime,
+      switchArena, arenasInDay, currentClassForArena, renderArenaBar,
     };
     window.__FL_READY = true;
   }

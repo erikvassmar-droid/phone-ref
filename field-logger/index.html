@@ -137,6 +137,17 @@
   .shot.hit{background:var(--green); color:#04150a; border-color:var(--green)}
   footer button.snd{background:var(--panel2); color:var(--green); border-color:var(--green-dim)}
 
+  /* arena switch: two courts at once. Full-width 2-up segmented control under the header. */
+  #arenaBar{display:flex; gap:6px; padding:6px 12px; border-bottom:1px solid var(--line)}
+  #arenaBar[hidden]{display:none}
+  .ab{flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:1px;
+      padding:7px 12px; border-radius:11px; border:1px solid var(--line); background:var(--panel2); color:var(--mut);
+      text-align:left; line-height:1.15}
+  .ab.on{border-color:var(--green); background:#10210f; color:var(--txt)}
+  .ab .al{font-size:11px; font-weight:800; letter-spacing:.3px; text-transform:uppercase; color:var(--mut)}
+  .ab.on .al{color:var(--green)}
+  .ab .ac{font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+
   /* class picker (the day's classes from Pages) */
   .cls#clsBtn.pickable{cursor:pointer}
   .cls#clsBtn.pickable .name::after{content:" ▾"; color:var(--green); font-size:12px}
@@ -151,6 +162,7 @@
   .pcls .pt{font-weight:800; font-size:15px; color:var(--green); min-width:48px; font-variant-numeric:tabular-nums}
   .pcls .pn{flex:1; min-width:0; font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .pcls .pm{font-size:12px; color:var(--mut); white-space:nowrap}
+  .pcls .pa{font-size:10px; font-weight:800; color:var(--green); border:1px solid var(--green-dim); border-radius:6px; padding:1px 5px; white-space:nowrap}
 
   /* coverage overlay */
   #cover{position:absolute; inset:0; background:#000; z-index:20; display:none; flex-direction:column; padding:16px;
@@ -242,6 +254,13 @@
     <div id="syncPill" class="pill warn">no sync</div>
     <div id="clock">--:--:--</div>
   </header>
+
+  <!-- arena switch: two courts run at once (Arena 1 / Arena 2). Tap a half to jump to that court's
+       current class. Shown only on multi-arena days (built by app.js from index.json arena tags). -->
+  <div id="arenaBar" hidden>
+    <button class="ab" data-arena="Arena 1"><span class="al">Arena 1</span><span class="ac" id="ac1">–</span></button>
+    <button class="ab" data-arena="Arena 2"><span class="al">Arena 2</span><span class="ac" id="ac2">–</span></button>
+  </div>
 
   <main>
     <div id="installBar">
