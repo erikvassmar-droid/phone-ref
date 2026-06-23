@@ -40,16 +40,16 @@
   /* current rider card */
   #current{
     background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid var(--line);
-    border-radius:var(--r); padding:12px 14px; display:flex; align-items:center; gap:12px; min-height:92px;
+    border-radius:var(--r); padding:13px 15px; display:flex; align-items:center; gap:13px; min-height:116px;
   }
   #current .no{
-    flex:none; min-width:54px; height:54px; padding:0 8px; border-radius:12px; background:var(--green);
-    color:#031206; font-weight:800; font-size:26px; display:flex; align-items:center; justify-content:center;
+    flex:none; min-width:64px; height:64px; padding:0 8px; border-radius:13px; background:var(--green);
+    color:#031206; font-weight:800; font-size:31px; display:flex; align-items:center; justify-content:center;
   }
   #current .who{flex:1; min-width:0}
-  #current .rider{font-weight:800; font-size:24px; line-height:1.13; overflow:hidden;
+  #current .rider{font-weight:800; font-size:31px; line-height:1.1; overflow:hidden;
     display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2}  /* wrap long names to 2 lines, then ellipsis */
-  #current .horse{font-size:15px; color:var(--mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  #current .horse{font-size:17px; color:var(--mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px}
   #current .angle{font-size:12px; color:#9fc0ab; margin-top:3px; line-height:1.32;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
   #current .angle:empty{display:none}
@@ -60,7 +60,7 @@
      flex column keeps a stable height; the enlarged card just dominates the screen. */
   body.big #current{min-height:152px}
   body.big #current .no{min-width:80px; height:80px; font-size:38px}
-  body.big #current .rider{font-size:31px}
+  body.big #current .rider{font-size:35px}
   body.big #current .horse{font-size:18px}
   body.big #current .nav{flex-direction:row; gap:10px}
   body.big #current .nav button{width:66px; height:66px; font-size:28px}
@@ -75,11 +75,11 @@
   .upnext::before{content:"NEXT "; color:var(--green); font-weight:800; font-size:11px; letter-spacing:.6px}
   .upnext.empty{display:none}
 
-  /* activity chips */
-  #activities{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
-  .act{height:var(--tap); border-radius:12px; border:1px solid var(--line); background:var(--panel);
-    color:var(--txt); font-size:15px; font-weight:600; display:flex; align-items:center; justify-content:center}
-  .act .em{margin-right:6px; font-size:17px}
+  /* activity chips - compact: secondary to the rider name, kept small + tight */
+  #activities{display:grid; grid-template-columns:repeat(3,1fr); gap:6px}
+  .act{height:38px; border-radius:10px; border:1px solid var(--line); background:var(--panel);
+    color:var(--txt); font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center}
+  .act .em{margin-right:4px; font-size:14px}
   .act.on{background:var(--green); color:#04150a; border-color:var(--green)}
 
   /* big actions */
@@ -241,7 +241,9 @@
   @media (max-width:370px){
     header{gap:7px}
     header .cls .sub{display:none}      /* drop the competition sub-line; the class name is enough */
-    #current .rider{font-size:22px}
+    #current .rider{font-size:27px}     /* still dominant on the 360px Note 9 */
+    #current .no{min-width:58px; height:58px; font-size:28px}
+    .act{font-size:12.5px}
   }
 </style>
 </head>
