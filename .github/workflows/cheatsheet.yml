@@ -42,10 +42,17 @@ jobs:
           git add nbech/index.html _state/notify.json
           if git diff --cached --quiet; then
             echo "no change - nothing to push"
-          else
-            git commit -m "cheat-sheet auto-update $(date -u +'%Y-%m-%d %H:%M') UTC"
-            git push
+            exit 0
           fi
+          git commit -m "cheat-sheet auto-update $(date -u +'%Y-%m-%d %H:%M') UTC"
+          # coexist with the desktop belt-writer: retry with a rebase if it pushed between our fetch and push.
+          # -X ours keeps THIS run's fresh rebuild on conflict. Never hard-fail - next run re-freshes anyway.
+          for attempt in 1 2 3; do
+            if git push; then echo "pushed (attempt $attempt)"; exit 0; fi
+            echo "push race - rebasing onto latest (attempt $attempt)"
+            git pull --rebase -X ours --autostash origin main || git rebase --abort || true
+          done
+          echo "could not push after 3 attempts - the next scheduled run will refresh"; exit 0
 
       - name: Notify phone (ntfy) on any Swedish podium finish
         if: always()
