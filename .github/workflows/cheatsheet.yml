@@ -1,0 +1,61 @@
+name: Cheat-sheet refresh (Falsterbo 80665)
+
+# Rebuilds the phone cheat-sheet from LIVE Equipe on GitHub's servers - no desktop needed.
+# Runs on a cron, commits nbech/index.html if it changed, which redeploys GitHub Pages.
+# Same pinned URL the phone is already on: https://erikvassmar-droid.github.io/phone-ref/nbech/
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 min (GitHub often delays scheduled runs a few min under load - fine here)
+  workflow_dispatch: {}      # manual "Run workflow" button / gh workflow run
+
+permissions:
+  contents: write            # the job commits + pushes the refreshed page back to the repo
+
+concurrency:
+  group: cheatsheet          # never let two refreshes race on a push
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build from live Equipe (80665)
+        run: |
+          mkdir -p _state nbech
+          # builder is pure-stdlib (tools/ holds nbech_cheatsheet + equipe_api + team_standings + equisport_core)
+          python tools/nbech_cheatsheet.py build \
+            --meeting 80665 \
+            --out nbech/index.html \
+            --notify-state _state/notify.json | tee build.out
+
+      - name: Commit & push if the page changed
+        run: |
+          git config user.name  'cheatsheet-bot'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add nbech/index.html _state/notify.json
+          if git diff --cached --quiet; then
+            echo "no change - nothing to push"
+          else
+            git commit -m "cheat-sheet auto-update $(date -u +'%Y-%m-%d %H:%M') UTC"
+            git push
+          fi
+
+      - name: Notify phone (ntfy) on any Swedish podium finish
+        if: always()
+        run: |
+          # build emits 'NOTIFY: ...' lines for newly-finished classes with a Swedish podium (de-duped via _state)
+          if [ -f build.out ]; then
+            grep '^NOTIFY:' build.out | sed 's/^NOTIFY:[[:space:]]*//' | while IFS= read -r msg; do
+              [ -n "$msg" ] && curl -s \
+                -H 'Title: Falsterbo result' -H 'Tags: trophy' \
+                -H 'Click: https://erikvassmar-droid.github.io/phone-ref/nbech/' \
+                -d "$msg" 'https://ntfy.sh/equisport-nbech-26-k9x2qm7v3p' >/dev/null || true
+            done
+          fi
